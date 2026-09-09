@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { box-sizing: border-box; }
+html { background: #0a0608; scrollbar-gutter: stable; }
+body { margin: 0; background: #0a0608; font-family: 'Imprima', sans-serif; -webkit-font-smoothing: antialiased; }
+button, input, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: rgba(243, 205, 214, 0.2); touch-action: manipulation; }
+button { color: inherit; }
+button:focus-visible, a:focus-visible { outline: 2px solid #f0e4c0; outline-offset: 5px; }
+img { display: block; }
+::selection { background: #f3cdd6; color: #3a2530; }
+@keyframes bobUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}

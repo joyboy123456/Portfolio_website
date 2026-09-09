@@ -1,0 +1,274 @@
+{
+  "profile": {
+    "name": "",
+    "brand": "衣着之间",
+    "title": "AI 童装电商视觉设计",
+    "intro": "专注童装搭配与 AI 电商视觉。从一件服装出发，选择内搭、下装、配饰与模特风格，在自然的童趣和清晰的商品表达之间找到平衡。关注版型、颜色与细节还原，也关注每一张主图的完整度。",
+    "email": "",
+    "wechat": "",
+    "resumeUrl": ""
+  },
+  "projects": [
+    {
+      "id": "look-01",
+      "title": "拼色轻外套",
+      "subtitle": "Little layers, bright days.",
+      "seasons": [
+        "春",
+        "秋"
+      ],
+      "category": "外套",
+      "direction": "以一件女童外套为起点，围绕配色、内搭和裤装建立清爽的完整造型。",
+      "roles": [
+        "搭配构思",
+        "AI 模特生成",
+        "服装上身",
+        "后期精修"
+      ],
+      "cover": "",
+      "sourceImage": "",
+      "stylingImage": "",
+      "gallery": []
+    },
+    {
+      "id": "look-02",
+      "title": "衬衫轻搭",
+      "subtitle": "An everyday kind of lovely.",
+      "seasons": [
+        "春"
+      ],
+      "category": "衬衫",
+      "direction": "通过衬衫与裙装、裤装的组合，探索同一件单品的不同日常风格。",
+      "roles": [
+        "搭配构思",
+        "AI 模特生成",
+        "服装上身",
+        "后期精修"
+      ],
+      "cover": "",
+      "sourceImage": "",
+      "stylingImage": "",
+      "gallery": []
+    },
+    {
+      "id": "look-03",
+      "title": "自在运动套装",
+      "subtitle": "Made for little adventures.",
+      "seasons": [
+        "春"
+      ],
+      "category": "套装",
+      "direction": "关注运动套装的整体比例与活动感，用自然姿态展示服装的舒适与细节。",
+      "roles": [
+        "搭配构思",
+        "AI 模特生成",
+        "服装上身",
+        "后期精修"
+      ],
+      "cover": "",
+      "sourceImage": "",
+      "stylingImage": "",
+      "gallery": []
+    },
+    {
+      "id": "look-04",
+      "title": "趣味短袖",
+      "subtitle": "Small details, big personality.",
+      "seasons": [
+        "夏"
+      ],
+      "category": "短袖",
+      "direction": "以短袖的图案与颜色为线索，搭配下装和小配饰，保留轻松自然的童趣。",
+      "roles": [
+        "搭配构思",
+        "AI 模特生成",
+        "服装上身",
+        "后期精修"
+      ],
+      "cover": "",
+      "sourceImage": "",
+      "stylingImage": "",
+      "gallery": []
+    },
+    {
+      "id": "look-05",
+      "title": "假日连衣裙",
+      "subtitle": "A little moment in the sun.",
+      "seasons": [
+        "夏"
+      ],
+      "category": "裙装",
+      "direction": "围绕连衣裙的层次、面料与颜色，构思轻盈的夏日穿搭和假日场景。",
+      "roles": [
+        "搭配构思",
+        "AI 模特生成",
+        "服装上身",
+        "后期精修"
+      ],
+      "cover": "",
+      "sourceImage": "",
+      "stylingImage": "",
+      "gallery": []
+    },
+    {
+      "id": "look-06",
+      "title": "轻松牛仔裤",
+      "subtitle": "Room to play.",
+      "seasons": [
+        "夏"
+      ],
+      "category": "裤装",
+      "direction": "以裤装的版型与长度为重点，研究上装搭配及鞋袜比例，清晰呈现单品。",
+      "roles": [
+        "搭配构思",
+        "AI 模特生成",
+        "服装上身",
+        "后期精修"
+      ],
+      "cover": "",
+      "sourceImage": "",
+      "stylingImage": "",
+      "gallery": []
+    },
+    {
+      "id": "look-07",
+      "title": "小小叠穿卫衣",
+      "subtitle": "Layers of everyday joy.",
+      "seasons": [
+        "秋"
+      ],
+      "category": "卫衣",
+      "direction": "通过卫衣、内搭与下装的层次关系，让秋日童装造型保持活泼与协调。",
+      "roles": [
+        "搭配构思",
+        "AI 模特生成",
+        "服装上身",
+        "后期精修"
+      ],
+      "cover": "",
+      "sourceImage": "",
+      "stylingImage": "",
+      "gallery": []
+    },
+    {
+      "id": "look-08",
+      "title": "撞色秋外套",
+      "subtitle": "A playful pop of color.",
+      "seasons": [
+        "秋"
+      ],
+      "category": "外套",
+      "direction": "从撞色外套的色块比例出发，调整内搭、帽子与裤装，突出服装本身。",
+      "roles": [
+        "搭配构思",
+        "AI 模特生成",
+        "服装上身",
+        "后期精修"
+      ],
+      "cover": "",
+      "sourceImage": "",
+      "stylingImage": "",
+      "gallery": []
+    },
+    {
+      "id": "look-09",
+      "title": "秋日运动套装",
+      "subtitle": "Ready for an ordinary adventure.",
+      "seasons": [
+        "秋"
+      ],
+      "category": "套装",
+      "direction": "以同款不同颜色和不同搭配为方向，探索统一风格下的主图与套图表达。",
+      "roles": [
+        "搭配构思",
+        "AI 模特生成",
+        "服装上身",
+        "后期精修"
+      ],
+      "cover": "",
+      "sourceImage": "",
+      "stylingImage": "",
+      "gallery": []
+    },
+    {
+      "id": "look-10",
+      "title": "温暖棉外套",
+      "subtitle": "Wrapped in a little warmth.",
+      "seasons": [
+        "冬"
+      ],
+      "category": "外套",
+      "direction": "在保暖层次与童装比例之间寻找平衡，强调冬季外套的版型和蓬松质感。",
+      "roles": [
+        "搭配构思",
+        "AI 模特生成",
+        "服装上身",
+        "后期精修"
+      ],
+      "cover": "",
+      "sourceImage": "",
+      "stylingImage": "",
+      "gallery": []
+    },
+    {
+      "id": "look-11",
+      "title": "软糯针织",
+      "subtitle": "Softness in every little detail.",
+      "seasons": [
+        "冬"
+      ],
+      "category": "针织",
+      "direction": "围绕针织的纹理与触感构思冬季搭配，用柔和光线呈现领口、袖口等细节。",
+      "roles": [
+        "搭配构思",
+        "AI 模特生成",
+        "服装上身",
+        "后期精修"
+      ],
+      "cover": "",
+      "sourceImage": "",
+      "stylingImage": "",
+      "gallery": []
+    },
+    {
+      "id": "look-12",
+      "title": "冬日休闲裤",
+      "subtitle": "Comfort with a little character.",
+      "seasons": [
+        "冬"
+      ],
+      "category": "裤装",
+      "direction": "突出裤装的面料、裤脚与版型，通过鞋袜与上装搭配构思完整冬日造型。",
+      "roles": [
+        "搭配构思",
+        "AI 模特生成",
+        "服装上身",
+        "后期精修"
+      ],
+      "cover": "",
+      "sourceImage": "",
+      "stylingImage": "",
+      "gallery": []
+    }
+  ],
+  "experience": {
+    "heroVideo": "/works/hero-video-capability.mp4",
+    "heroPoster": "/works/hero-video-capability-poster.jpg",
+    "heroLabel": "AI 影像生成展示",
+    "collage": {
+      "jacket": "",
+      "trousers": "",
+      "top": "",
+      "hat": "",
+      "dress": "",
+      "set": "",
+      "accessory": ""
+    },
+    "seasons": {
+      "春": "",
+      "夏": "",
+      "秋": "",
+      "冬": ""
+    }
+  }
+}
