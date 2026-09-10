@@ -1,0 +1,9 @@
+tunnel: 0213c0a5-d86f-4cc8-a150-f967e378914e
+credentials-file: /etc/cloudflared/0213c0a5-d86f-4cc8-a150-f967e378914e.json
+
+ingress:
+  - hostname: oai.locker
+    service: http://127.0.0.1:80
+    originRequest:
+      httpHostHeader: oai.locker
+  - service: http_status:404

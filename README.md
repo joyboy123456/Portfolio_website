@@ -23,7 +23,7 @@ npm run dev
 
 ## 素材状态
 
-**首屏使用用户提供的《视频生成能力.mp4》剪辑版，页面标注“AI 影像生成展示”。** 保留原片 0.5–7.5 秒的连续推近镜头，输出 7 秒、1280 × 720、24 fps 的静音 H.264 MP4（约 4.9 MB）；每 12 帧一个关键帧，启用 faststart，便于首屏加载与滚动定位。视频与首帧封面位于 `public/works/hero-video-capability.mp4`、`public/works/hero-video-capability-poster.jpg`。原始视频未修改。七张拼贴素材、四季大图以及全部 12 组作品图片均留空。原始商品搜索截图只作为风格参考，未放入画廊。
+**首屏使用用户提供的户外童装视频网页优化版，页面标注“AI 影像生成展示”。** 当前素材为 15 秒、1920 × 1080、24 fps 的静音 H.264 MP4（约 13.6 MB）；每 12 帧一个关键帧，启用 faststart，便于首屏加载与滚动定位。视频与匹配的首帧封面位于 `public/works/hero-adventure-scroll.mp4`、`public/works/hero-adventure-scroll-poster.jpg`。原始视频未修改。七张拼贴素材、四季大图以及全部 12 组作品图片均留空。原始商品搜索截图只作为风格参考，未放入画廊。
 
 ## 所有填充内容：public/portfolio.json
 

@@ -1,0 +1,265 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+umask 022
+
+readonly REPOSITORY_URL="https://github.com/joyboy123456/Portfolio_website.git"
+readonly APP_ROOT="/srv/oai-locker"
+readonly REPOSITORY_DIR="$APP_ROOT/repository"
+readonly BUILD_ROOT="$APP_ROOT/builds"
+readonly WEB_ROOT="/var/www/oai.locker"
+readonly RELEASE_ROOT="$WEB_ROOT/releases"
+readonly SUCCESS_ROOT="$WEB_ROOT/successful"
+readonly CURRENT_LINK="$WEB_ROOT/current"
+readonly CANDIDATE_LINK="$WEB_ROOT/candidate"
+readonly DEPLOYED_COMMIT_FILE="$WEB_ROOT/deployed-commit"
+readonly KEEP_RELEASES=5
+readonly MAX_DIST_BYTES=536870912
+readonly MAX_DIST_FILES=10000
+
+if [[ "$EUID" -ne 0 ]]; then
+    echo "This command must run as root."
+    exit 77
+fi
+
+if [[ "$#" -ne 1 ]] || [[ ! "$1" =~ ^[0-9a-f]{40}$ ]]; then
+    echo "Expected one lowercase 40-character Git commit SHA."
+    exit 64
+fi
+
+REQUESTED_COMMIT="$1"
+readonly REQUESTED_COMMIT
+
+mkdir -p "$APP_ROOT" "$BUILD_ROOT" "$RELEASE_ROOT" "$SUCCESS_ROOT"
+
+exec 9>"$APP_ROOT/deploy.lock"
+if ! flock -n 9; then
+    echo "Another deployment is already running."
+    exit 75
+fi
+
+if [[ ! -d "$REPOSITORY_DIR/.git" ]]; then
+    git clone \
+        --filter=blob:none \
+        --no-checkout \
+        --single-branch \
+        --branch main \
+        "$REPOSITORY_URL" \
+        "$REPOSITORY_DIR"
+fi
+
+git -C "$REPOSITORY_DIR" remote set-url origin "$REPOSITORY_URL"
+git -C "$REPOSITORY_DIR" fetch \
+    --force \
+    --prune \
+    "$REPOSITORY_URL" \
+    "+refs/heads/main:refs/remotes/origin/main"
+
+MAIN_COMMIT="$(git -C "$REPOSITORY_DIR" rev-parse "origin/main^{commit}")"
+readonly MAIN_COMMIT
+
+git -C "$REPOSITORY_DIR" cat-file -e "$REQUESTED_COMMIT^{commit}"
+if ! git -C "$REPOSITORY_DIR" merge-base --is-ancestor "$REQUESTED_COMMIT" "$MAIN_COMMIT"; then
+    echo "Requested commit is not part of origin/main."
+    exit 65
+fi
+
+CURRENT_RELEASE="$(readlink -f "$CURRENT_LINK" 2>/dev/null || true)"
+DEPLOYED_COMMIT=""
+DEPLOYED_RELEASE_ID=""
+if [[ -f "$DEPLOYED_COMMIT_FILE" ]]; then
+    read -r DEPLOYED_COMMIT DEPLOYED_RELEASE_ID < "$DEPLOYED_COMMIT_FILE" || true
+fi
+
+if [[ "$DEPLOYED_COMMIT" == "$REQUESTED_COMMIT" ]] \
+    && [[ "$CURRENT_RELEASE" == "$RELEASE_ROOT/$DEPLOYED_RELEASE_ID" ]] \
+    && [[ -d "$CURRENT_RELEASE" ]] \
+    && [[ -f "$CURRENT_RELEASE/index.html" ]] \
+    && [[ -f "$CURRENT_RELEASE/portfolio.json" ]]; then
+    echo "Commit $REQUESTED_COMMIT is already deployed."
+    exit 0
+fi
+
+RELEASE_ID="$(date -u +%Y%m%dT%H%M%SZ)-${REQUESTED_COMMIT:0:12}"
+readonly RELEASE_ID
+readonly BUILD_DIR="$BUILD_ROOT/$RELEASE_ID"
+readonly DIST_DIR="$BUILD_DIR/dist"
+readonly RELEASE_DIR="$RELEASE_ROOT/$RELEASE_ID"
+readonly NEXT_LINK="$WEB_ROOT/.current-$RELEASE_ID"
+readonly NEXT_CANDIDATE_LINK="$WEB_ROOT/.candidate-$RELEASE_ID"
+PREVIOUS_RELEASE="$CURRENT_RELEASE"
+PUBLISH_SUCCEEDED=0
+BUILD_MOUNTED=0
+
+cleanup() {
+    if [[ "$BUILD_MOUNTED" -eq 1 ]] && mountpoint -q "$BUILD_DIR"; then
+        umount "$BUILD_DIR" || umount --lazy "$BUILD_DIR" || true
+    fi
+    rmdir "$BUILD_DIR" 2>/dev/null || true
+    rm -f "$NEXT_LINK" "$NEXT_CANDIDATE_LINK"
+
+    if [[ "$PUBLISH_SUCCEEDED" -eq 0 ]]; then
+        if [[ "$(readlink -f "$CURRENT_LINK" 2>/dev/null || true)" == "$RELEASE_DIR" ]]; then
+            if [[ -n "$PREVIOUS_RELEASE" ]] && [[ -d "$PREVIOUS_RELEASE" ]]; then
+                ln -s "$PREVIOUS_RELEASE" "$NEXT_LINK"
+                mv -Tf "$NEXT_LINK" "$CURRENT_LINK"
+            else
+                rm -f "$CURRENT_LINK"
+            fi
+        fi
+        if [[ "$(readlink -f "$CANDIDATE_LINK" 2>/dev/null || true)" == "$RELEASE_DIR" ]]; then
+            rm -f "$CANDIDATE_LINK"
+        fi
+        rm -f "$SUCCESS_ROOT/$RELEASE_ID"
+        rm -rf "$RELEASE_DIR"
+    fi
+}
+trap cleanup EXIT
+
+BUILDER_UID="$(id -u oai-builder)"
+readonly BUILDER_UID
+BUILDER_GID="$(id -g oai-builder)"
+readonly BUILDER_GID
+
+install -d -o root -g root -m 0755 "$BUILD_DIR"
+mount \
+    -t tmpfs \
+    -o "size=512m,nosuid,nodev,mode=0750,uid=$BUILDER_UID,gid=$BUILDER_GID" \
+    "oai-locker-build" \
+    "$BUILD_DIR"
+BUILD_MOUNTED=1
+
+git -C "$REPOSITORY_DIR" archive "$REQUESTED_COMMIT" \
+    | runuser -u oai-builder -- tar -x -C "$BUILD_DIR"
+
+readonly -a SANDBOX_OPTIONS=(
+    --quiet \
+    --wait \
+    --pipe \
+    --collect \
+    --uid=oai-builder \
+    --gid=oai-builder \
+    --working-directory="$BUILD_DIR" \
+    --setenv="HOME=$BUILD_DIR/.home" \
+    --setenv="npm_config_cache=$BUILD_DIR/.npm-cache" \
+    --property="NoNewPrivileges=yes" \
+    --property="PrivateDevices=yes" \
+    --property="PrivateTmp=yes" \
+    --property="ProtectHome=yes" \
+    --property="ProtectSystem=strict" \
+    --property="ReadWritePaths=$BUILD_DIR" \
+    --property="RestrictSUIDSGID=yes" \
+    --property="MemoryMax=768M" \
+    --property="TasksMax=256" \
+    --property="RuntimeMaxSec=10min" \
+    --property="TimeoutStartSec=10min"
+)
+
+systemd-run \
+    "${SANDBOX_OPTIONS[@]}" \
+    --property="RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6" \
+    /bin/bash -Eeuo pipefail -c \
+    'mkdir -p "$HOME" "$npm_config_cache"; npm ci --ignore-scripts --no-audit --no-fund'
+
+systemd-run \
+    "${SANDBOX_OPTIONS[@]}" \
+    --property="PrivateNetwork=yes" \
+    --property="RestrictAddressFamilies=AF_UNIX" \
+    /bin/bash -Eeuo pipefail -c 'npm run build'
+
+test -f "$DIST_DIR/index.html"
+test -f "$DIST_DIR/portfolio.json"
+
+if find "$DIST_DIR" ! -type f ! -type d -print -quit | grep -q .; then
+    echo "Build output contains a symlink or special file."
+    exit 66
+fi
+
+DIST_BYTES="$(du -sb "$DIST_DIR" | awk '{print $1}')"
+readonly DIST_BYTES
+DIST_FILES="$(find "$DIST_DIR" -type f | wc -l)"
+readonly DIST_FILES
+
+if (( DIST_BYTES > MAX_DIST_BYTES || DIST_FILES > MAX_DIST_FILES )); then
+    echo "Build output exceeds the deployment size or file-count limit."
+    exit 67
+fi
+
+install -d -o root -g www-data -m 0755 "$RELEASE_DIR"
+rsync \
+    -rlt \
+    --delete \
+    --chmod=D755,F644 \
+    --chown=root:www-data \
+    "$DIST_DIR/" \
+    "$RELEASE_DIR/"
+
+ln -s "$RELEASE_DIR" "$NEXT_CANDIDATE_LINK"
+mv -Tf "$NEXT_CANDIDATE_LINK" "$CANDIDATE_LINK"
+
+INDEX_SHA="$(sha256sum "$RELEASE_DIR/index.html" | awk '{print $1}')"
+readonly INDEX_SHA
+JSON_SHA="$(sha256sum "$RELEASE_DIR/portfolio.json" | awk '{print $1}')"
+readonly JSON_SHA
+CANDIDATE_INDEX_SHA="$(curl --noproxy "*" --connect-timeout 3 --max-time 10 --fail --silent --show-error "http://127.0.0.1:18080/" | sha256sum | awk '{print $1}')"
+readonly CANDIDATE_INDEX_SHA
+CANDIDATE_JSON_SHA="$(curl --noproxy "*" --connect-timeout 3 --max-time 10 --fail --silent --show-error "http://127.0.0.1:18080/portfolio.json" | sha256sum | awk '{print $1}')"
+readonly CANDIDATE_JSON_SHA
+
+if [[ "$CANDIDATE_INDEX_SHA" != "$INDEX_SHA" ]] || [[ "$CANDIDATE_JSON_SHA" != "$JSON_SHA" ]]; then
+    echo "Candidate health check returned content from a different release."
+    exit 68
+fi
+
+ln -s "$RELEASE_DIR" "$NEXT_LINK"
+mv -Tf "$NEXT_LINK" "$CURRENT_LINK"
+
+PRODUCTION_INDEX_SHA="$(curl \
+    --noproxy "*" \
+    --connect-timeout 3 \
+    --max-time 10 \
+    --fail \
+    --silent \
+    --show-error \
+    --resolve "oai.locker:443:127.0.0.1" \
+    "https://oai.locker/" \
+    | sha256sum \
+    | awk '{print $1}' \
+    || true)"
+readonly PRODUCTION_INDEX_SHA
+
+if [[ "$PRODUCTION_INDEX_SHA" != "$INDEX_SHA" ]]; then
+    if [[ -n "$PREVIOUS_RELEASE" ]] && [[ -d "$PREVIOUS_RELEASE" ]]; then
+        ln -s "$PREVIOUS_RELEASE" "$NEXT_LINK"
+        mv -Tf "$NEXT_LINK" "$CURRENT_LINK"
+        echo "Production health check failed; the previous release was restored."
+    elif [[ "$(readlink -f "$CURRENT_LINK" 2>/dev/null || true)" == "$RELEASE_DIR" ]]; then
+        rm -f "$CURRENT_LINK"
+        echo "Production health check failed; no previous release was available."
+    fi
+    exit 1
+fi
+
+touch "$SUCCESS_ROOT/$RELEASE_ID"
+printf '%s %s\n' "$REQUESTED_COMMIT" "$RELEASE_ID" > "$DEPLOYED_COMMIT_FILE.tmp"
+chown root:www-data "$DEPLOYED_COMMIT_FILE.tmp"
+chmod 0644 "$DEPLOYED_COMMIT_FILE.tmp"
+mv -f "$DEPLOYED_COMMIT_FILE.tmp" "$DEPLOYED_COMMIT_FILE"
+PUBLISH_SUCCEEDED=1
+rm -f "$CANDIDATE_LINK" || true
+
+mapfile -t OLD_RELEASE_MARKERS < <(
+    find "$SUCCESS_ROOT" -mindepth 1 -maxdepth 1 -type f -printf '%T@ %f\n' \
+        | sort -nr \
+        | awk -v keep="$KEEP_RELEASES" 'NR > keep { sub(/^[^ ]+ /, ""); print }'
+)
+
+for release_marker in "${OLD_RELEASE_MARKERS[@]}"; do
+    old_release="$RELEASE_ROOT/$release_marker"
+    if [[ "$old_release" != "$(readlink -f "$CURRENT_LINK")" ]]; then
+        rm -rf "$old_release"
+        rm -f "$SUCCESS_ROOT/$release_marker"
+    fi
+done
+
+echo "Deployed $REQUESTED_COMMIT as $RELEASE_ID."
