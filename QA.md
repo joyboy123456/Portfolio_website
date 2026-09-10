@@ -8,7 +8,15 @@
 - `npm run build` 成功；Vite 处理 4 个模块。
 - 页面源文件只有一个内联 style 和一个内联 module script，无 React 导入。
 - 运行依赖仅保留 Vite 开发/构建工具；npm 审计 17 个包，0 个已报告漏洞。
-- 最终构建：HTML 约 31.29 kB，gzip 8.19 kB；脚本约 20.80 kB，gzip 8.12 kB。
+- 最终构建：HTML 约 33.72 kB，gzip 8.77 kB；脚本约 22.63 kB，gzip 8.79 kB。
+
+## 首次打开与加载遮罩
+
+- 使用独立本地服务器将 `portfolio.json` 人为延迟 30 秒；延迟期间 `site-ready=false`、`aria-busy=true`，仅显示不透明的品牌启动层。
+- 慢加载状态下 DOM 不再包含 `IMAGE IN THE MAKING`，截图未出现旧素材占位页。
+- 正常加载完成后 `site-ready=true`，启动层从 DOM 移除；首屏海报和视频就绪类均存在。
+- 精确阻断 `portfolio.json` 时，启动层保留并显示“作品资料加载失败”和“重新加载”按钮；恢复网络后点击按钮可正常进入页面。
+- iPhone 14 模拟视口为 390×844，无横向溢出；开启减少动态效果后进度条动画为 `none`，正常加载后启动层同样移除。
 
 ## 桌面滚动
 

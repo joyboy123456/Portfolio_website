@@ -17,7 +17,8 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     [hidden] { display: none !important; }
     html { overscroll-behavior: none; overflow-x: hidden; scroll-behavior: smooth; }
-    body { background: transparent; font-family: 'Inter Tight', 'PingFang SC', 'Microsoft YaHei', sans-serif; font-weight: 600; color: var(--ink); min-height: 100vh; overflow-x: hidden; }
+    html:not(.site-ready) { overflow: hidden; }
+    body { background: var(--olive); font-family: 'Inter Tight', 'PingFang SC', 'Microsoft YaHei', sans-serif; font-weight: 600; color: var(--ink); min-height: 100vh; overflow-x: hidden; }
     button, input, textarea { font: inherit; }
     button, a { -webkit-tap-highlight-color: rgba(0,0,0,.1); touch-action: manipulation; }
     button { cursor: pointer; color: inherit; }
@@ -27,6 +28,19 @@
     button:focus-visible, a:focus-visible { outline: 3px solid #a4bc63; outline-offset: 5px; }
     ::selection { background: #cbd398; color: #111; }
     .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    #boot-screen { position: fixed; inset: 0; z-index: 1000; min-height: 100vh; min-height: 100svh; padding: 14px; background: var(--olive); color: #fff; display: flex; flex-direction: column; justify-content: space-between; opacity: 1; transition: opacity 240ms cubic-bezier(.4,0,1,1); }
+    #boot-screen.is-leaving { opacity: 0; pointer-events: none; }
+    .boot-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+    .boot-brand { font-size: clamp(42px,7vw,112px); line-height: .88; letter-spacing: -.065em; }
+    .boot-brand sup { display: inline-block; margin-left: 8px; font-size: .12em; letter-spacing: 0; vertical-align: top; }
+    .boot-index { max-width: 210px; font-size: 11px; line-height: 1.45; letter-spacing: .08em; text-align: right; }
+    .boot-bottom { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: end; gap: 16px 24px; }
+    .boot-status { display: grid; gap: 10px; font-size: 11px; letter-spacing: .09em; text-transform: uppercase; }
+    .boot-track { width: min(520px,70vw); height: 2px; overflow: hidden; background: rgba(255,255,255,.22); }
+    .boot-progress-bar { display: block; width: 100%; height: 100%; background: #fff; transform: scaleX(.12); transform-origin: left center; animation: boot-progress 1.25s cubic-bezier(.4,0,.2,1) infinite; }
+    #boot-screen.has-error .boot-progress-bar { animation-play-state: paused; transform: scaleX(1); }
+    #boot-retry { align-self: end; font-size: 11px; padding: 10px 12px; }
+    @keyframes boot-progress { 0% { transform: translateX(-25%) scaleX(.12); } 55% { transform: translateX(38%) scaleX(.62); } 100% { transform: translateX(110%) scaleX(.18); } }
     .skip-link { position: fixed; z-index: 200; left: 14px; top: 74px; transform: translateX(-160%); }
     .skip-link:focus { transform: none; }
     .cell { background: #fff; color: #000; font-size: 18px; font-weight: 600; letter-spacing: .01em; line-height: 1.15; padding: 10px 14px; border: 0; border-radius: 3px; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; gap: 14px; backdrop-filter: none; -webkit-backdrop-filter: none; }
@@ -53,13 +67,13 @@
     .mobile-menu-content .cell:nth-child(4) { transition-delay: .16s; }
     .mobile-menu-content .cell:nth-child(5) { transition-delay: .20s; }
     .mobile-menu-content .cell:nth-child(6) { transition-delay: .24s; }
-    #background-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100svh; z-index: 1; overflow: hidden; background: #dce0d8; }
-    #bg-video { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .7s ease; }
+    #background-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100svh; z-index: 1; overflow: hidden; background: #d9ddcf; }
+    #hero-poster, #bg-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; }
+    #hero-poster { transition: opacity 240ms cubic-bezier(0,0,.2,1); }
+    #bg-video { transition: opacity 320ms cubic-bezier(0,0,.2,1); }
+    #background-wrapper.poster-ready #hero-poster { opacity: 1; }
     #background-wrapper.video-ready #bg-video { opacity: 1; }
-    .hero-fallback { position: absolute; inset: 0; display: grid; place-items: center; background: #d9ddcf; overflow: hidden; }
-    .fallback-symbol { font-size: 75vw; line-height: .8; color: #bec5ab; transform: rotate(-14deg); }
-    .fallback-caption { position: absolute; top: 42%; left: 50%; transform: translateX(-50%); font-size: 12px; letter-spacing: .12em; color: #555e43; }
-    #background-wrapper.video-ready .hero-fallback { visibility: hidden; }
+    #background-wrapper.video-ready #hero-poster { opacity: 0; }
     #hero-meta { position: fixed; top: 82px; left: 14px; right: 14px; z-index: 18; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; gap: 14px; }
     #hero-meta .cell { font-size: 10px; min-height: 32px; padding: 9px 11px; }
     .hero-labels { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -200,6 +214,11 @@
       .section-description { max-width: 235px; }
     }
     @media (max-width: 768px) {
+      #boot-screen { padding: 12px; }
+      .boot-top { flex-direction: column; gap: 12px; }
+      .boot-index { max-width: none; text-align: left; }
+      .boot-bottom { grid-template-columns: 1fr; }
+      #boot-retry { justify-self: start; }
       .bottom-title-text { font-size: 40px; }
       #hero-scroll-cue { bottom: 125px; font-size: 10px; }
       #hero-meta { top: 68px; flex-direction: column; gap: 6px; }
@@ -275,6 +294,7 @@
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+      .boot-progress-bar { animation: none; transform: scaleX(1); }
       .hero-spacer { height: 100svh; }
       #loop-scroll-spacer { height: 0; }
       #product-slider-overlay { position: relative; inset: auto; clip-path: none !important; -webkit-clip-path: none !important; visibility: visible; display: block; pointer-events: auto; }
@@ -292,10 +312,14 @@
     }
   </style>
 </head>
-<body>
+<body aria-busy="true">
+  <div id="boot-screen" role="status" aria-live="polite" aria-label="正在加载作品集">
+    <div class="boot-top"><span class="boot-brand"><span id="boot-brand-name">衣着之间</span><sup>TM</sup></span><span class="boot-index">AI KIDSWEAR VISUALS<br />PORTFOLIO / 2026</span></div>
+    <div class="boot-bottom"><div class="boot-status"><span id="boot-status-text">LOADING VISUAL / 影像加载中</span><span class="boot-track" aria-hidden="true"><span class="boot-progress-bar"></span></span></div><button id="boot-retry" class="cell" type="button" hidden>重新加载 ↗</button></div>
+  </div>
   <a href="#collection" class="cell skip-link">跳到作品索引</a>
   <div id="background-wrapper" aria-hidden="true">
-    <div class="hero-fallback"><span class="fallback-symbol">✦</span><span class="fallback-caption">IMAGE IN THE MAKING / 影像待更新</span></div>
+    <img id="hero-poster" alt="" fetchpriority="high" decoding="async" />
     <video id="bg-video" class="bg-video" playsinline webkit-playsinline autoplay muted preload="auto" referrerpolicy="no-referrer"></video>
   </div>
   <header id="header-container">
@@ -363,12 +387,23 @@
     const state = { data: null, season: '全部', category: '全部', compact: false, project: null, stage: 'cover', menuOpen: false };
     const reducedMedia = matchMedia('(prefers-reduced-motion: reduce)');
     let reducedMotion = reducedMedia.matches;
+    const background = $('#background-wrapper');
+    const poster = $('#hero-poster');
     const video = $('#bg-video');
     const overlay = $('#product-slider-overlay');
     const track = $('#product-slider-track');
     const symbol = $('#slider-symbol');
     const title = $('#bottom-title-container');
     const dialog = $('#work-dialog');
+    const boot = $('#boot-screen');
+    const bootStatus = $('#boot-status-text');
+    const bootRetry = $('#boot-retry');
+    const bootStartedAt = performance.now();
+    const bootState = { portfolioReady: false, heroReady: false, dismissed: false };
+    const heroMediaRequested = new Set();
+    const heroMediaFailures = new Set();
+    const bootInertState = new Map([...document.body.children].filter((element) => element !== boot && element.tagName !== 'SCRIPT').map((element) => [element, element.inert]));
+    bootInertState.forEach((_, element) => { element.inert = true; });
     let parallaxItems = [];
     let seasonImages = [];
     let metrics = { heroHeight: innerHeight * 2.5, processTop: 0, processHeight: 1, revealStart: 0, revealEnd: 0, width: innerWidth, height: innerHeight };
@@ -388,6 +423,59 @@
     let dialogOverflow = '';
     let menuOverflow = '';
     let copyTimer;
+    let heroSafetyTimer;
+
+    function setBootStatus(message, isError = false) {
+      if (bootState.dismissed) return;
+      bootStatus.textContent = message;
+      boot.classList.toggle('has-error', isError);
+      bootRetry.hidden = !isError;
+    }
+    function revealSite() {
+      if (bootState.dismissed || !bootState.portfolioReady || !bootState.heroReady) return;
+      bootState.dismissed = true;
+      clearTimeout(heroSafetyTimer);
+      bootStatus.textContent = 'READY / 作品已就绪';
+      const delay = Math.max(0, 420 - (performance.now() - bootStartedAt));
+      setTimeout(() => {
+        document.documentElement.classList.add('site-ready');
+        document.body.removeAttribute('aria-busy');
+        bootInertState.forEach((wasInert, element) => { element.inert = wasInert; });
+        boot.classList.add('is-leaving');
+        boot.setAttribute('aria-hidden', 'true');
+        setTimeout(() => boot.remove(), reducedMotion ? 0 : 260);
+      }, delay);
+    }
+    function markBootReady(key) {
+      if (bootState[key]) return;
+      bootState[key] = true;
+      revealSite();
+    }
+    function markHeroMediaReady(kind) {
+      if (!heroMediaRequested.has(kind)) return;
+      clearTimeout(heroSafetyTimer);
+      markBootReady('heroReady');
+    }
+    function markHeroMediaFailed(kind) {
+      if (!heroMediaRequested.has(kind) || heroMediaFailures.has(kind)) return;
+      heroMediaFailures.add(kind);
+      if (heroMediaFailures.size === heroMediaRequested.size) {
+        clearTimeout(heroSafetyTimer);
+        markBootReady('heroReady');
+      }
+    }
+    function armHeroSafetyTimeout() {
+      clearTimeout(heroSafetyTimer);
+      if (!heroMediaRequested.size) { markBootReady('heroReady'); return; }
+      heroSafetyTimer = setTimeout(() => {
+        setBootStatus('OPENING PORTFOLIO / 影像继续载入');
+        markBootReady('heroReady');
+      }, 15000);
+    }
+    bootRetry.addEventListener('click', () => {
+      setBootStatus('LOADING VISUAL / 影像加载中');
+      loadPortfolio();
+    });
 
     function validatePortfolio(value) {
       if (!value || typeof value !== 'object' || !value.profile || !Array.isArray(value.projects)) throw new Error('作品资料格式不正确。');
@@ -449,11 +537,23 @@
       const play = video.play();
       Promise.resolve(play).then(() => { video.pause(); videoPrimed = true; }).catch(() => { video.pause(); }).finally(() => { videoPriming = false; wake(); });
     }
+    poster.addEventListener('load', async () => {
+      try { await poster.decode(); } catch { /* load 已成功时仍可交给浏览器完成绘制。 */ }
+      background.classList.add('poster-ready');
+      markHeroMediaReady('poster');
+    });
+    poster.addEventListener('error', () => { background.classList.remove('poster-ready'); markHeroMediaFailed('poster'); });
     video.addEventListener('loadedmetadata', () => { video.pause(); videoPrimed = false; primeVideo(); measure(); });
-    video.addEventListener('loadeddata', () => { $('#background-wrapper').classList.add('video-ready'); video.pause(); primeVideo(); wake(); });
+    video.addEventListener('loadeddata', () => {
+      background.classList.add('video-ready');
+      video.pause();
+      primeVideo();
+      requestAnimationFrame(() => requestAnimationFrame(() => markHeroMediaReady('video')));
+      wake();
+    });
     video.addEventListener('seeked', wake);
     video.addEventListener('canplay', wake);
-    video.addEventListener('error', () => { $('#background-wrapper').classList.remove('video-ready'); $('#hero-credit').textContent = '首屏影像待更新'; });
+    video.addEventListener('error', () => { background.classList.remove('video-ready'); $('#hero-credit').textContent = background.classList.contains('poster-ready') ? '静态首屏影像' : '首屏影像待更新'; markHeroMediaFailed('video'); });
     document.addEventListener('touchstart', primeVideo, { passive: true, once: true });
     document.addEventListener('pointerdown', primeVideo, { passive: true, once: true });
 
@@ -682,6 +782,7 @@
     function renderProfile() {
       const profile = state.data.profile;
       const brand = profile.name || profile.brand || '衣着之间';
+      $('#boot-brand-name').textContent = brand;
       $('#cell-brand').innerHTML = `${escapeHTML(brand)}<sup>™</sup>`;
       document.title = `${brand}™ · ${profile.title}作品集`;
       $('#profile-intro').textContent = profile.intro;
@@ -699,16 +800,27 @@
       });
       const experience = state.data.experience || {};
       const videoURL = assetURL(experience.heroVideo);
+      const posterURL = assetURL(experience.heroPoster);
+      heroMediaRequested.clear();
+      heroMediaFailures.clear();
+      if (posterURL) {
+        heroMediaRequested.add('poster');
+        poster.src = posterURL;
+      }
       if (videoURL) {
+        heroMediaRequested.add('video');
         if (reducedMotion) video.removeAttribute('autoplay');
         video.src = videoURL;
-        if (assetURL(experience.heroPoster)) video.poster = assetURL(experience.heroPoster);
+        if (posterURL) video.poster = posterURL;
         video.load();
       }
-      $('#hero-credit').textContent = typeof experience.heroLabel === 'string' && experience.heroLabel ? experience.heroLabel : videoURL ? '个人作品影像' : '首屏影像待更新';
+      armHeroSafetyTimeout();
+      $('#hero-credit').textContent = typeof experience.heroLabel === 'string' && experience.heroLabel ? experience.heroLabel : videoURL || posterURL ? '个人作品影像' : '首屏影像待更新';
     }
     async function loadPortfolio() {
       const loading = $('#loading-state');
+      bootState.portfolioReady = false;
+      setBootStatus('LOADING VISUAL / 影像加载中');
       loading.hidden = false;
       loading.setAttribute('role', 'status');
       loading.textContent = '正在展开作品索引…';
@@ -720,7 +832,9 @@
         $('#collection-content').hidden = false;
         loading.hidden = true;
         measure();
+        markBootReady('portfolioReady');
       } catch (error) {
+        setBootStatus('LOAD FAILED / 作品资料加载失败', true);
         loading.setAttribute('role', 'alert');
         loading.textContent = error instanceof Error ? error.message : '作品资料暂时无法加载。';
         const retry = document.createElement('button'); retry.type = 'button'; retry.className = 'cell'; retry.textContent = '重新加载 ↗'; retry.style.margin = '20px auto 0'; retry.style.display = 'flex'; retry.addEventListener('click', loadPortfolio); loading.append(retry);
