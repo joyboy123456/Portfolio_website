@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#575234" />
+  <meta name="description" content="衣着之间 · AI 童装电商视觉作品集。从一件单品，到完整穿搭，探索服装、人物与画面的每一种可能。" />
+  <title>衣着之间™ · AI 童装视觉作品集</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://i.ibb.co" crossorigin />
+  <link rel="preconnect" href="https://d8j0ntlcm91z4.cloudfront.net" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    :root { --olive: #575234; --paper: #f4f4ee; --ink: #141511; --line: #d0d2c8; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+    html { overscroll-behavior: none; overflow-x: hidden; scroll-behavior: smooth; }
+    html:not(.site-ready) { overflow: hidden; }
+    body { background: var(--olive); font-family: 'Inter Tight', 'PingFang SC', 'Microsoft YaHei', sans-serif; font-weight: 600; color: var(--ink); min-height: 100vh; overflow-x: hidden; }
+    button, input, textarea { font: inherit; }
+    button, a { -webkit-tap-highlight-color: rgba(0,0,0,.1); touch-action: manipulation; }
+    button { cursor: pointer; color: inherit; }
+    button:disabled { cursor: default; opacity: .4; }
+    a { color: inherit; text-decoration: none; }
+    img, video { display: block; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #a4bc63; outline-offset: 5px; }
+    ::selection { background: #cbd398; color: #111; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    #boot-screen { position: fixed; inset: 0; z-index: 1000; min-height: 100vh; min-height: 100svh; padding: 14px; background: var(--olive); color: #fff; display: flex; flex-direction: column; justify-content: space-between; opacity: 1; transition: opacity 240ms cubic-bezier(.4,0,1,1); }
+    #boot-screen.is-leaving { opacity: 0; pointer-events: none; }
+    .boot-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+    .boot-brand { font-size: clamp(42px,7vw,112px); line-height: .88; letter-spacing: -.065em; }
+    .boot-brand sup { display: inline-block; margin-left: 8px; font-size: .12em; letter-spacing: 0; vertical-align: top; }
+    .boot-index { max-width: 210px; font-size: 11px; line-height: 1.45; letter-spacing: .08em; text-align: right; }
+    .boot-bottom { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: end; gap: 16px 24px; }
+    .boot-status { display: grid; gap: 10px; font-size: 11px; letter-spacing: .09em; text-transform: uppercase; }
+    .boot-track { width: min(520px,70vw); height: 2px; overflow: hidden; background: rgba(255,255,255,.22); }
+    .boot-progress-bar { display: block; width: 100%; height: 100%; background: #fff; transform: scaleX(.12); transform-origin: left center; animation: boot-progress 1.25s cubic-bezier(.4,0,.2,1) infinite; }
+    #boot-screen.has-error .boot-progress-bar { animation-play-state: paused; transform: scaleX(1); }
+    #boot-retry { align-self: end; font-size: 11px; padding: 10px 12px; }
+    @keyframes boot-progress { 0% { transform: translateX(-25%) scaleX(.12); } 55% { transform: translateX(38%) scaleX(.62); } 100% { transform: translateX(110%) scaleX(.18); } }
+    .skip-link { position: fixed; z-index: 200; left: 14px; top: 74px; transform: translateX(-160%); }
+    .skip-link:focus { transform: none; }
+    .cell { background: #fff; color: #000; font-size: 18px; font-weight: 600; letter-spacing: .01em; line-height: 1.15; padding: 10px 14px; border: 0; border-radius: 3px; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; gap: 14px; backdrop-filter: none; -webkit-backdrop-filter: none; }
+    a.cell, button.cell { transition: background-color .15s ease, color .15s ease; }
+    a.cell:hover, button.cell:hover { background: #dce1c9; }
+    .cell.dark { background: #171813; color: #fff; }
+    .micro { font-size: 11px; letter-spacing: .075em; text-transform: uppercase; }
+    .muted { color: #6b7061; }
+    #header-container { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 12px 14px 0; gap: 12px; pointer-events: none; }
+    #header-left, #header-center, #header-right { display: flex; gap: 6px; align-items: center; pointer-events: auto; }
+    #cell-brand { letter-spacing: -.04em; }
+    #cell-brand sup { font-size: 10px; align-self: flex-start; margin: 0 0 0 -10px; }
+    #clock-text { font-size: 13px; min-height: 41px; font-variant-numeric: tabular-nums; letter-spacing: 0; }
+    .center-cell:first-child { min-width: 140px; }
+    #menu-toggle-btn { display: none !important; }
+    #mobile-menu-overlay { position: fixed; inset: 0; z-index: 99; opacity: 0; pointer-events: none; background: rgba(0,0,0,0); backdrop-filter: blur(0); -webkit-backdrop-filter: blur(0); transition: opacity .4s cubic-bezier(.16,1,.3,1), background-color .4s cubic-bezier(.16,1,.3,1), backdrop-filter .4s cubic-bezier(.16,1,.3,1); }
+    #mobile-menu-overlay.active { opacity: 1; pointer-events: auto; background: rgba(0,0,0,.08); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); }
+    .mobile-menu-content { min-height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 14px; padding: 80px 20px 40px; }
+    .mobile-menu-content .cell { opacity: 0; transform: translateY(20px) scale(.96); transition: opacity .4s cubic-bezier(.16,1,.3,1), transform .4s cubic-bezier(.16,1,.3,1); }
+    #mobile-menu-overlay.active .cell { opacity: 1; transform: translateY(0) scale(1); }
+    .mobile-menu-content .cell:nth-child(1) { transition-delay: .04s; font-size: 12px; }
+    .mobile-menu-content .cell:nth-child(2) { transition-delay: .08s; }
+    .mobile-menu-content .cell:nth-child(3) { transition-delay: .12s; }
+    .mobile-menu-content .cell:nth-child(4) { transition-delay: .16s; }
+    .mobile-menu-content .cell:nth-child(5) { transition-delay: .20s; }
+    .mobile-menu-content .cell:nth-child(6) { transition-delay: .24s; }
+    #background-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100svh; z-index: 1; overflow: hidden; background: #d9ddcf; }
+    #hero-poster, #bg-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; }
+    #hero-poster { transition: opacity 240ms cubic-bezier(0,0,.2,1); }
+    #bg-video { transition: opacity 320ms cubic-bezier(0,0,.2,1); }
+    #background-wrapper.poster-ready #hero-poster { opacity: 1; }
+    #background-wrapper.video-ready #bg-video { opacity: 1; }
+    #background-wrapper.video-ready #hero-poster { opacity: 0; }
+    #hero-meta { position: fixed; top: 82px; left: 14px; right: 14px; z-index: 18; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; gap: 14px; }
+    #hero-meta .cell { font-size: 10px; min-height: 32px; padding: 9px 11px; }
+    .hero-labels { display: flex; flex-wrap: wrap; gap: 6px; }
+    #bottom-title-container { position: fixed; bottom: 12px; left: 14px; right: 14px; z-index: 19; pointer-events: none; display: flex; justify-content: center; align-items: flex-end; mix-blend-mode: difference; transform-origin: 50% 100%; will-change: transform, opacity, filter; }
+    .bottom-title-text { max-width: 1600px; font-size: 80px; font-weight: 600; line-height: 1; letter-spacing: -.015em; text-transform: uppercase; color: #fff; text-align: center; text-wrap: balance; }
+    #hero-scroll-cue { position: fixed; left: 14px; bottom: 205px; z-index: 18; font-size: 11px; padding: 10px 12px; }
+    #hero-progress { position: fixed; top: 0; left: 0; z-index: 101; height: 2px; background: #fff; width: 100%; transform: scaleX(0); transform-origin: 0 50%; }
+    .hero-spacer { height: 250vh; height: 250svh; pointer-events: none; }
+    #page-content { position: relative; }
+    .yellow-text-section { background: var(--olive); width: 100%; padding: 224px 24px; display: flex; justify-content: center; align-items: center; position: relative; z-index: 20; --pscale: 1; overflow: hidden; scroll-margin-top: 64px; }
+    .process-label { position: absolute; top: 32px; left: 24px; z-index: 12; font-size: 11px; }
+    .process-index { position: absolute; top: 38px; right: 24px; z-index: 12; color: #fff; font-size: 11px; }
+    .text-block-container { max-width: 1406px; width: 100%; margin: 0 auto; color: #fff; mix-blend-mode: difference; display: flex; flex-direction: column; gap: 32px; position: relative; z-index: 10; }
+    .text-block-container p { font-size: 70px; line-height: 1.12; letter-spacing: -.03em; text-indent: 140px; text-align: left; text-wrap: pretty; }
+    .parallax-layer { position: absolute; inset: 0; pointer-events: none; }
+    .parallax-layer.back { z-index: 5; }
+    .parallax-layer.front { z-index: 11; }
+    .parallax-item { position: absolute; aspect-ratio: 3 / 4; will-change: transform; }
+    .parallax-item img { width: 100%; height: 100%; object-fit: contain; }
+    .collage-placeholder { width: 100%; height: 100%; border: 1px solid rgba(255,255,255,.45); color: rgba(255,255,255,.55); background: rgba(255,255,255,.025); position: relative; display: flex; justify-content: center; align-items: center; font-size: calc(130px * var(--pscale)); }
+    .collage-placeholder::before, .collage-placeholder::after { content: ''; position: absolute; inset: 8%; border: 1px solid rgba(255,255,255,.2); }
+    .collage-placeholder::after { inset: 20%; border-radius: 50%; }
+    .collage-caption { position: absolute; top: 10px; left: 10px; font-size: max(9px, calc(13px * var(--pscale))); letter-spacing: .08em; color: rgba(255,255,255,.75); }
+    .item-jacket { top: 2%; left: 7%; width: calc(640px * var(--pscale)); }
+    .item-trousers { top: 9%; left: 66%; width: calc(326px * var(--pscale)); }
+    .item-hat { top: 33%; left: 7%; width: calc(310px * var(--pscale)); }
+    .item-top { top: 28%; left: 64%; width: calc(467px * var(--pscale)); }
+    .item-set { top: 50%; left: 37%; width: calc(596px * var(--pscale)); }
+    .item-dress { top: 58%; left: 74%; width: calc(346px * var(--pscale)); }
+    .item-accessory { top: 72%; left: 13%; width: calc(224px * var(--pscale)); }
+    #season-experience { position: relative; z-index: 25; }
+    #loop-scroll-spacer { height: 3400px; width: 100%; background: var(--olive); position: relative; z-index: 20; }
+    #product-slider-overlay { position: fixed; inset: 0; z-index: 30; display: flex; overflow: hidden; clip-path: inset(50% 50% 50% 50%); -webkit-clip-path: inset(50% 50% 50% 50%); pointer-events: none; visibility: hidden; }
+    #product-slider-overlay.is-active { visibility: visible; pointer-events: auto; }
+    #product-slider-track { display: flex; height: 100%; will-change: transform; }
+    .season-card { width: 100vw; height: 100vh; height: 100svh; flex-shrink: 0; position: relative; overflow: hidden; background: var(--season-color); }
+    .season-image { position: absolute; top: 0; left: 0; width: 140%; height: 100%; object-fit: cover; margin-left: -20%; will-change: transform; }
+    .season-poster { position: absolute; inset: 12%; border: 1px solid rgba(43,49,32,.3); display: flex; align-items: center; justify-content: center; flex-direction: column; }
+    .season-poster::before { content: ''; position: absolute; inset: 7%; border: 1px solid rgba(43,49,32,.12); }
+    .season-letters { font-size: min(32vw, 430px); line-height: .9; color: rgba(37,45,27,.23); letter-spacing: -.07em; }
+    .season-empty-label { font-size: 12px; letter-spacing: .12em; margin-top: 22px; color: #525a45; }
+    .season-code { position: absolute; top: 91px; left: 32px; z-index: 2; font-size: 12px; letter-spacing: .06em; }
+    .season-info { position: absolute; bottom: 32px; left: 32px; z-index: 3; display: flex; gap: 8px; flex-wrap: wrap; max-width: calc(100% - 64px); }
+    .season-info .cell { font-size: 18px; padding: 13px; letter-spacing: -.03em; }
+    #slider-symbol { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 600px; color: #fff; mix-blend-mode: difference; z-index: 51; transition: opacity .2s ease; line-height: 1; pointer-events: none; }
+    .slider-controls { position: absolute; right: 32px; bottom: 98px; z-index: 52; display: flex; gap: 6px; align-items: center; }
+    .slider-controls .cell { font-size: 14px; min-width: 42px; }
+    #season-progress { min-width: 70px; font-variant-numeric: tabular-nums; }
+    #collection { position: relative; z-index: 40; background: var(--paper); min-height: 100vh; padding: 104px 24px 64px; scroll-margin-top: 0; }
+    .section-topline { display: flex; justify-content: space-between; gap: 24px; align-items: flex-start; margin-bottom: 50px; }
+    .section-title { font-size: clamp(52px, 8vw, 116px); line-height: .93; letter-spacing: -.055em; text-transform: uppercase; }
+    .section-description { max-width: 280px; font-size: 13px; line-height: 1.7; padding-top: 7px; }
+    .collection-stamp { margin-bottom: 12px; display: inline-flex; border: 1px solid var(--ink); border-radius: 3px; padding: 7px 9px; font-size: 10px; letter-spacing: .03em; }
+    .filters { border-top: 1px solid var(--ink); padding-top: 16px; }
+    .filter-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .filter-row + .filter-row { margin-top: 10px; }
+    .filter-row .cell { font-size: 14px; min-height: 41px; }
+    .filter-label { font-size: 11px; padding-right: 14px; min-width: 58px; }
+    .filter-button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+    .filter-button sup { font-size: 9px; opacity: .7; }
+    .filter-toolbar { display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 24px 0 20px; }
+    #result-count { font-size: 11px; color: #5b6250; }
+    .toolbar-actions { display: flex; gap: 6px; align-items: center; }
+    .toolbar-actions .cell { font-size: 11px; min-height: 34px; padding: 8px 11px; }
+    .layout-button[aria-pressed="true"] { background: #dfe2d5; }
+    .work-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 36px 16px; }
+    .work-grid.compact { grid-template-columns: repeat(4,minmax(0,1fr)); }
+    .work-card { border: 0; background: none; text-align: left; width: 100%; min-width: 0; }
+    .work-image-wrapper { position: relative; overflow: hidden; }
+    .image-frame { aspect-ratio: var(--ratio,1 / 1); width: 100%; position: relative; overflow: hidden; background: var(--frame-color,#e0e2d8); }
+    .image-frame img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s cubic-bezier(.16,1,.3,1); }
+    .work-card:hover .image-frame img { transform: scale(1.035); }
+    .image-frame.detail img { object-fit: contain; }
+    .image-frame.empty { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .image-frame.empty::before { content: ''; position: absolute; inset: 8%; border: 1px solid rgba(58,68,41,.22); }
+    .frame-number { font-size: clamp(64px,10vw,150px); color: transparent; -webkit-text-stroke: 1px #89917b; letter-spacing: -.07em; line-height: 1; }
+    .frame-note { font-size: 11px; color: #556047; margin-top: 18px; letter-spacing: .08em; }
+    .frame-caption { position: absolute; bottom: 13%; left: 10%; right: 10%; text-align: center; font-size: 10px; letter-spacing: .1em; color: #556047; }
+    .work-top-tag { position: absolute; top: 10px; left: 10px; padding: 6px 8px; background: #fff; border-radius: 3px; font-size: 10px; line-height: 1; }
+    .work-open-icon { position: absolute; right: 10px; bottom: 10px; background: #fff; border-radius: 3px; font-size: 18px; width: 36px; height: 36px; display: grid; place-items: center; transition: transform .18s ease; }
+    .work-card:hover .work-open-icon { transform: rotate(45deg); }
+    .work-meta { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 13px; }
+    .work-meta h3 { font-size: 18px; line-height: 1.3; letter-spacing: -.02em; }
+    .work-meta span { font-size: 10px; color: #626957; white-space: nowrap; }
+    .work-subtitle { font-size: 11px; color: #626957; margin-top: 7px; }
+    .empty-state { min-height: 310px; display: flex; flex-direction: column; gap: 22px; align-items: center; justify-content: center; text-align: center; border: 1px solid var(--line); padding: 30px; }
+    .empty-state h3 { font-size: 30px; letter-spacing: -.04em; }
+    .empty-state p { color: #626957; font-size: 13px; line-height: 1.7; }
+    #loading-state { padding: 70px 0; text-align: center; font-size: 15px; }
+    .collection-end { display: flex; justify-content: space-between; gap: 16px; font-size: 10px; margin-top: 64px; border-top: 1px solid var(--line); padding-top: 16px; color: #626957; }
+    #about { position: relative; z-index: 40; background: #d9dfca; padding: 100px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 70px; }
+    .about-title { font-size: clamp(38px,5vw,74px); letter-spacing: -.045em; line-height: 1.1; margin-top: 30px; }
+    .about-copy { font-size: 20px; line-height: 1.7; max-width: 660px; margin: 35px 0; }
+    .disciplines { display: flex; flex-wrap: wrap; gap: 7px; }
+    .disciplines .cell { font-size: 12px; }
+    #contact { position: relative; z-index: 40; background: #171913; color: #fff; padding: 90px 24px 24px; }
+    .contact-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; padding-bottom: 65px; }
+    .contact-heading { font-size: clamp(52px,9vw,132px); line-height: .94; letter-spacing: -.05em; }
+    .contact-details { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; padding-bottom: 5px; }
+    .contact-details p { font-size: 12px; color: #b5bbaa; }
+    .contact-details .cell { font-size: 14px; }
+    .contact-footer { display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid #474c3e; padding-top: 22px; font-size: 10px; color: #b5bbaa; }
+    #work-dialog { border: 0; border-radius: 3px; padding: 0; width: min(1180px,calc(100% - 28px)); max-width: none; max-height: 92dvh; margin: auto; background: var(--paper); color: var(--ink); overflow: auto; overscroll-behavior: contain; }
+    #work-dialog::backdrop { background: rgba(21,25,14,.45); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+    .dialog-header { position: sticky; top: 0; z-index: 2; background: var(--paper); padding: 13px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid var(--line); }
+    .dialog-header .cell { font-size: 12px; }
+    .dialog-header button { min-width: 42px; font-size: 22px; }
+    .dialog-main { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; padding: 30px; }
+    .image-stages { display: flex; gap: 6px; margin-bottom: 15px; flex-wrap: wrap; }
+    .image-stages .cell { font-size: 12px; }
+    .image-stages button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+    .dialog-copy { padding-top: 10px; }
+    .dialog-copy h2 { font-size: clamp(32px,4vw,55px); line-height: 1.1; margin: 26px 0 15px; letter-spacing: -.045em; }
+    .dialog-copy > p { color: #626957; font-size: 13px; }
+    .dialog-field { border-top: 1px solid var(--line); padding-top: 21px; margin-top: 26px; }
+    .dialog-field h3 { font-size: 11px; margin-bottom: 12px; }
+    .dialog-field p { font-size: 14px; color: #626957; line-height: 1.8; }
+    .dialog-tags { display: flex; gap: 7px; flex-wrap: wrap; }
+    .dialog-tags .cell { font-size: 11px; }
+    .dialog-gallery { padding: 0 30px 30px; }
+    .dialog-gallery h3 { font-size: 11px; margin-bottom: 18px; }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 1200px) {
+      .bottom-title-text { font-size: 60px; }
+      #hero-scroll-cue { bottom: 161px; }
+      .yellow-text-section { --pscale: .72; padding: 170px 24px; }
+      .text-block-container p { font-size: 54px; text-indent: 100px; }
+      #clock-text { font-size: 11px; padding: 10px; }
+      #header-center .cell, #header-right .cell { font-size: 16px; }
+      .center-cell:first-child { min-width: 115px; }
+    }
+    @media (max-width: 1024px) {
+      #clock-text, #header-center, #header-right > a { display: none !important; }
+      #menu-toggle-btn { display: inline-flex !important; }
+      #cell-brand, #menu-toggle-btn { font-size: 16px; padding: 10px 14px; }
+      .work-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .work-grid.compact { grid-template-columns: repeat(3,minmax(0,1fr)); }
+      .section-description { max-width: 235px; }
+    }
+    @media (max-width: 768px) {
+      #boot-screen { padding: 12px; }
+      .boot-top { flex-direction: column; gap: 12px; }
+      .boot-index { max-width: none; text-align: left; }
+      .boot-bottom { grid-template-columns: 1fr; }
+      #boot-retry { justify-self: start; }
+      .bottom-title-text { font-size: 40px; }
+      #hero-scroll-cue { bottom: 125px; font-size: 10px; }
+      #hero-meta { top: 68px; flex-direction: column; gap: 6px; }
+      #hero-meta .cell { font-size: 9px; min-height: 28px; }
+      .yellow-text-section { --pscale: .5; padding: 128px 20px; }
+      .text-block-container { gap: 26px; }
+      .text-block-container p { font-size: 34px; text-indent: 60px; line-height: 1.22; }
+      .process-label { left: 20px; font-size: 10px; }
+      .process-index { right: 20px; top: 83px; font-size: 9px; }
+      .item-set { left: 26%; }
+      .item-top { left: 60%; }
+      .item-dress { left: 70%; }
+      #slider-symbol { font-size: 200px; }
+      .season-info { left: 14px; bottom: 20px; gap: 6px; max-width: calc(100% - 28px); }
+      .season-info .cell { padding: 11px; font-size: 14px; }
+      .season-code { left: 14px; top: 75px; font-size: 10px; }
+      .season-poster { inset: 18% 9%; }
+      .season-letters { font-size: 45vw; }
+      .slider-controls { right: 14px; bottom: 80px; }
+      #collection { padding: 82px 16px 48px; }
+      .section-topline { flex-direction: column; gap: 24px; margin-bottom: 32px; }
+      .section-title { font-size: 68px; }
+      .section-description { max-width: 350px; font-size: 12px; }
+      .collection-stamp { margin-bottom: 10px; }
+      .filter-row .cell { font-size: 12px; padding: 9px 11px; min-height: 36px; }
+      .filter-label { min-width: 40px; padding-right: 5px; font-size: 10px; }
+      .filter-toolbar { gap: 12px; align-items: flex-start; }
+      .toolbar-actions .cell { font-size: 10px; padding: 7px 8px; }
+      #result-count { font-size: 10px; line-height: 1.6; }
+      .work-grid, .work-grid.compact { gap: 30px 12px; }
+      .work-grid.compact { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .work-meta { flex-direction: column; gap: 7px; }
+      .work-meta h3 { font-size: 16px; }
+      .work-subtitle { font-size: 10px; }
+      .work-open-icon { width: 28px; height: 28px; font-size: 14px; }
+      .frame-number { font-size: 24vw; }
+      .frame-note { font-size: 10px; letter-spacing: 0; }
+      .frame-caption { font-size: 8px; letter-spacing: .035em; bottom: 12%; }
+      .work-top-tag { font-size: 8px; left: 7px; top: 7px; }
+      #about { padding: 70px 20px; grid-template-columns: 1fr; gap: 24px; }
+      .about-copy { font-size: 17px; margin: 0 0 25px; }
+      .about-title { font-size: 42px; }
+      #contact { padding: 66px 20px 24px; }
+      .contact-top { flex-direction: column; align-items: flex-start; padding-bottom: 50px; }
+      .contact-heading { font-size: 76px; }
+      .contact-details { align-items: flex-start; }
+      .contact-footer { font-size: 9px; line-height: 1.7; }
+      .dialog-main { grid-template-columns: 1fr; gap: 28px; padding: 20px; }
+      .dialog-header { padding: 10px 14px; }
+      .dialog-header > span { font-size: 10px; }
+      .dialog-gallery { padding: 0 20px 20px; }
+      .detail-grid { grid-template-columns: 1fr; }
+      .dialog-copy h2 { font-size: 38px; }
+    }
+    @media (max-width: 480px) {
+      .bottom-title-text { font-size: 28px; }
+      #hero-scroll-cue { bottom: 100px; }
+      .yellow-text-section { --pscale: .4; padding: 126px 16px; }
+      .text-block-container p { font-size: 26px; text-indent: 40px; }
+      .text-block-container { gap: 29px; }
+      .item-jacket { left: -8%; }
+      .item-trousers { left: 66%; }
+      .item-set { left: 20%; }
+      .section-title { font-size: 61px; }
+      .work-grid { grid-template-columns: 1fr; }
+      .work-grid.compact { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .work-grid:not(.compact) .work-meta { flex-direction: row; }
+      .work-grid:not(.compact) .frame-number { font-size: 120px; }
+      .work-grid.compact .frame-note { font-size: 9px; }
+      .work-grid.compact .frame-caption { display: none; }
+      .contact-heading { font-size: 62px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+      .boot-progress-bar { animation: none; transform: scaleX(1); }
+      .hero-spacer { height: 100svh; }
+      #loop-scroll-spacer { height: 0; }
+      #product-slider-overlay { position: relative; inset: auto; clip-path: none !important; -webkit-clip-path: none !important; visibility: visible; display: block; pointer-events: auto; }
+      #product-slider-track { transform: none !important; display: grid; grid-template-columns: 1fr 1fr; }
+      .season-card { width: 100%; height: 70svh; }
+      .season-letters { font-size: 20vw; }
+      .season-code { top: 24px; }
+      #slider-symbol, .slider-controls { display: none; }
+      .season-image { transform: none !important; }
+      .parallax-item { transform: none !important; }
+    }
+    @media (prefers-reduced-motion: reduce) and (max-width: 768px) {
+      #product-slider-track { grid-template-columns: 1fr; }
+      .season-letters { font-size: 42vw; }
+    }
+  </style>
+</head>
+<body aria-busy="true">
+  <div id="boot-screen" role="status" aria-live="polite" aria-label="正在加载作品集">
+    <div class="boot-top"><span class="boot-brand"><span id="boot-brand-name">衣着之间</span><sup>TM</sup></span><span class="boot-index">AI KIDSWEAR VISUALS<br />PORTFOLIO / 2026</span></div>
+    <div class="boot-bottom"><div class="boot-status"><span id="boot-status-text">LOADING VISUAL / 影像加载中</span><span class="boot-track" aria-hidden="true"><span class="boot-progress-bar"></span></span></div><button id="boot-retry" class="cell" type="button" hidden>重新加载 ↗</button></div>
+  </div>
+  <a href="#collection" class="cell skip-link">跳到作品索引</a>
+  <div id="background-wrapper" aria-hidden="true">
+    <img id="hero-poster" alt="" fetchpriority="high" decoding="async" />
+    <video id="bg-video" class="bg-video" playsinline webkit-playsinline autoplay muted preload="auto" referrerpolicy="no-referrer"></video>
+  </div>
+  <header id="header-container">
+    <div id="header-left"><a href="#top" class="cell" id="cell-brand" aria-label="返回首页">衣着之间<sup>™</sup></a><span class="cell" id="clock-text" aria-label="本地时间"></span></div>
+    <nav id="header-center" aria-label="主导航"><a class="cell center-cell" href="#collection">Collection ↗</a><a class="cell center-cell" href="#process">Process</a><a class="cell center-cell" href="#about">About</a></nav>
+    <div id="header-right"><a class="cell" href="#contact">Contact ↗</a><button class="cell" id="menu-toggle-btn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="mobile-menu-overlay">Menu</button></div>
+  </header>
+  <div id="mobile-menu-overlay" role="dialog" aria-modal="true" aria-label="导航菜单" aria-hidden="true" inert>
+    <div class="mobile-menu-content"><span class="cell" id="mobile-clock"></span><a class="cell" href="#collection">Collection / 作品索引 ↗</a><a class="cell" href="#process">Process / 创作过程</a><a class="cell" href="#about">About / 关于我</a><a class="cell" href="#contact">Contact / 联系</a><a class="cell" href="#top">Back to top ↑</a></div>
+  </div>
+  <div id="hero-progress" aria-hidden="true"></div>
+  <div id="hero-meta"><div class="hero-labels"><span class="cell">AI KIDSWEAR VISUALS</span><span class="cell">童装搭配 / 个人作品集</span></div><span class="cell" id="hero-credit">演示影像</span></div>
+  <div id="bottom-title-container"><h1 class="bottom-title-text">FROM ONE PIECE,<br />TO A WHOLE NEW WORLD.</h1></div>
+  <a href="#process" id="hero-scroll-cue" class="cell">SCROLL TO EXPLORE ↓</a>
+  <main id="page-content">
+    <div id="top" class="hero-spacer" aria-label="滚动探索影像"></div>
+    <section id="process" class="yellow-text-section" aria-label="从单品到完整造型">
+      <span class="cell process-label">01 / THE WAY I SEE IT</span><span class="process-index">STYLING ⊹ AI CREATION ⊹ VISUAL DETAIL</span>
+      <div class="parallax-layer back" id="collage-back" aria-hidden="true"></div>
+      <div class="text-block-container"><p>从一件单品 ⟡ 出发，把颜色与廓形，搭成一个完整的童装世界。</p><p>内搭 ⊹ 下装 ⊹ 配饰。每一个选择，都让穿搭多一种可能。</p><p>AI 负责生成 ∿ 审美负责选择。版型、纹理与印花，需要逐一校对。</p><p>人物、姿态与光线 ⟶ 让商品的细节被看见，也让童趣自然发生。</p><p>把搭配想清楚，再让想象成为一张图 ✦</p></div>
+      <div class="parallax-layer front" id="collage-front" aria-hidden="true"></div>
+    </section>
+    <section id="season-experience" aria-label="四季作品展映">
+      <div id="loop-scroll-spacer" aria-hidden="true"></div>
+      <div id="product-slider-overlay" aria-label="四季展映" aria-hidden="true" inert>
+        <div id="product-slider-track"></div>
+        <span id="slider-symbol" aria-hidden="true">⟡</span>
+        <div class="slider-controls" aria-label="切换季节"><button class="cell" type="button" id="season-prev" aria-label="上一个季节">←</button><span class="cell" id="season-progress" aria-live="polite">01 / 04</span><button class="cell" type="button" id="season-next" aria-label="下一个季节">→</button></div>
+      </div>
+    </section>
+    <section id="collection" aria-labelledby="collection-title">
+      <div class="section-topline"><div><span class="collection-stamp">02 / THE WORK INDEX</span><h2 class="section-title" id="collection-title">WORK<br />IN PROGRESS.</h2></div><div class="section-description"><p>季节在变，搭配的可能也在生长。<br />从一件单品，到一整套童装造型。</p><p class="muted" id="collection-summary" style="margin-top:18px">12 组作品位 / 持续更新</p></div></div>
+      <div id="collection-content" hidden><div class="filters"><div class="filter-row" id="season-filters" role="group" aria-label="按季节筛选"></div><div class="filter-row" id="category-filters" role="group" aria-label="按服装品类筛选"></div></div><div class="filter-toolbar"><p id="result-count" role="status" aria-live="polite"></p><div class="toolbar-actions"><button id="clear-filters" class="cell" type="button" hidden>重置 ↺</button><button class="cell layout-button" type="button" data-layout="wide" aria-label="舒展布局" aria-pressed="true">▥</button><button class="cell layout-button" type="button" data-layout="compact" aria-label="紧凑布局" aria-pressed="false">▦</button></div></div><div id="work-grid" class="work-grid"></div><div class="collection-end"><span>AI KIDSWEAR / AN ONGOING COLLECTION</span><span id="work-total">12 LOOKS</span></div></div>
+      <div id="loading-state" role="status">正在展开作品索引…</div>
+    </section>
+    <section id="about" aria-labelledby="about-title"><div><span class="cell micro">03 / BEHIND THE IMAGE</span><h2 class="about-title" id="about-title">让审美有表达，<br />让服装有说服力。</h2></div><div><p class="about-copy" id="profile-intro">专注童装搭配与 AI 电商视觉。从一件服装出发，在自然的童趣和清晰的商品表达之间找到平衡。</p><div class="disciplines"><span class="cell">童装搭配</span><span class="cell">AI 模特生成</span><span class="cell">服装还原</span><span class="cell">主图与套图</span></div></div></section>
+  </main>
+  <footer id="contact"><div class="contact-top"><div><p class="micro" style="margin-bottom:28px">04 / LET’S MAKE SOMETHING</p><h2 class="contact-heading">MAKE IT<br />SEEN. ↗</h2></div><div class="contact-details" id="contact-details"><p>期待下一次，一起创作。</p><p>联系方式待补充</p></div></div><div class="contact-footer"><span id="copyright">© 衣着之间 / PERSONAL PORTFOLIO</span><a href="#top">BACK TO TOP ↑</a></div></footer>
+  <dialog id="work-dialog" aria-labelledby="detail-title"><div class="dialog-header"><span class="micro">PROJECT / STYLING NOTES</span><button type="button" class="cell" id="dialog-close" aria-label="关闭作品详情">×</button></div><div id="dialog-body"></div></dialog>
+  <div id="copy-status" class="sr-only" role="status" aria-live="polite"></div>
+  <script type="module">
+    const $ = (selector) => document.querySelector(selector);
+    const $$ = (selector) => [...document.querySelectorAll(selector)];
+    const clamp = (value, min = 0, max = 1) => Math.max(min, Math.min(max, value));
+    const lerp = (start, end, amount) => start + (end - start) * amount;
+    const easeInOutCubic = (t) => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    const escapeHTML = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
+    const assetURL = (value) => typeof value === 'string' && /^(https?:\/\/|\/(?!\/))/.test(value.trim()) ? value.trim() : '';
+    const SEASONS = ['春', '夏', '秋', '冬'];
+    const SEASON_EN = { 春: 'SPRING', 夏: 'SUMMER', 秋: 'AUTUMN', 冬: 'WINTER' };
+    const SEASON_COLORS = { 春: '#dce2ce', 夏: '#e8e2cd', 秋: '#c3c6b3', 冬: '#dbe1e1' };
+    const SEASON_TITLES = { 春: '春日轻搭', 夏: '夏日趣味', 秋: '秋日层次', 冬: '冬日包裹' };
+    const CATEGORY_ORDER = ['短袖', '外套', '裤装', '套装', '卫衣', '衬衫', '裙装', '针织'];
+    const CATEGORY_EN = { 短袖: 'T-SHIRTS', 外套: 'OUTERWEAR', 裤装: 'TROUSERS', 套装: 'CO-ORD SETS', 卫衣: 'SWEATSHIRTS', 衬衫: 'SHIRTS', 裙装: 'DRESSES', 针织: 'KNITWEAR' };
+    const STAGES = [{ key: 'cover', label: '最终成图', en: 'FINAL VISUAL' }, { key: 'sourceImage', label: '原始单品', en: 'THE GARMENT' }, { key: 'stylingImage', label: '搭配过程', en: 'STYLING STUDY' }];
+    const COLLAGE = [
+      { key: 'jacket', label: '01 / OUTERWEAR', layer: 'back', speed: .14, drift: -.22, rot: -.6 },
+      { key: 'dress', label: '02 / DRESSES', layer: 'back', speed: .42, drift: .26, rot: -1 },
+      { key: 'trousers', label: '03 / TROUSERS', layer: 'front', speed: .44, drift: .28, rot: .9 },
+      { key: 'hat', label: '04 / HEADWEAR', layer: 'front', speed: .46, drift: -.30, rot: 1.4 },
+      { key: 'top', label: '05 / TOPS', layer: 'front', speed: .30, drift: .24, rot: -1.2 },
+      { key: 'set', label: '06 / CO-ORD SETS', layer: 'front', speed: .18, drift: .16, rot: .5 },
+      { key: 'accessory', label: '07 / ACCESSORIES', layer: 'front', speed: .60, drift: -.30, rot: 1.8 },
+    ];
+    const state = { data: null, season: '全部', category: '全部', compact: false, project: null, stage: 'cover', menuOpen: false };
+    const reducedMedia = matchMedia('(prefers-reduced-motion: reduce)');
+    let reducedMotion = reducedMedia.matches;
+    const background = $('#background-wrapper');
+    const poster = $('#hero-poster');
+    const video = $('#bg-video');
+    const overlay = $('#product-slider-overlay');
+    const track = $('#product-slider-track');
+    const symbol = $('#slider-symbol');
+    const title = $('#bottom-title-container');
+    const dialog = $('#work-dialog');
+    const boot = $('#boot-screen');
+    const bootStatus = $('#boot-status-text');
+    const bootRetry = $('#boot-retry');
+    const bootStartedAt = performance.now();
+    const bootState = { portfolioReady: false, heroReady: false, dismissed: false };
+    const heroMediaRequested = new Set();
+    const heroMediaFailures = new Set();
+    const bootInertState = new Map([...document.body.children].filter((element) => element !== boot && element.tagName !== 'SCRIPT').map((element) => [element, element.inert]));
+    bootInertState.forEach((_, element) => { element.inert = true; });
+    let parallaxItems = [];
+    let seasonImages = [];
+    let metrics = { heroHeight: innerHeight * 2.5, processTop: 0, processHeight: 1, revealStart: 0, revealEnd: 0, width: innerWidth, height: innerHeight };
+    let raf = 0;
+    let smoothHero = 0;
+    let smoothParallax = 0;
+    let smoothReveal = 0;
+    let smoothCard = 0;
+    let smoothVideoTime = 0;
+    let lastSeek = 0;
+    let videoPrimed = false;
+    let videoPriming = false;
+    let activeIndex = -1;
+    let symbolTimer;
+    let symbolFading = false;
+    let previousFocus;
+    let dialogOverflow = '';
+    let menuOverflow = '';
+    let copyTimer;
+    let heroSafetyTimer;
+
+    function setBootStatus(message, isError = false) {
+      if (bootState.dismissed) return;
+      bootStatus.textContent = message;
+      boot.classList.toggle('has-error', isError);
+      bootRetry.hidden = !isError;
+    }
+    function revealSite() {
+      if (bootState.dismissed || !bootState.portfolioReady || !bootState.heroReady) return;
+      bootState.dismissed = true;
+      clearTimeout(heroSafetyTimer);
+      bootStatus.textContent = 'READY / 作品已就绪';
+      const delay = Math.max(0, 420 - (performance.now() - bootStartedAt));
+      setTimeout(() => {
+        document.documentElement.classList.add('site-ready');
+        document.body.removeAttribute('aria-busy');
+        bootInertState.forEach((wasInert, element) => { element.inert = wasInert; });
+        boot.classList.add('is-leaving');
+        boot.setAttribute('aria-hidden', 'true');
+        setTimeout(() => boot.remove(), reducedMotion ? 0 : 260);
+      }, delay);
+    }
+    function markBootReady(key) {
+      if (bootState[key]) return;
+      bootState[key] = true;
+      revealSite();
+    }
+    function markHeroMediaReady(kind) {
+      if (!heroMediaRequested.has(kind)) return;
+      clearTimeout(heroSafetyTimer);
+      markBootReady('heroReady');
+    }
+    function markHeroMediaFailed(kind) {
+      if (!heroMediaRequested.has(kind) || heroMediaFailures.has(kind)) return;
+      heroMediaFailures.add(kind);
+      if (heroMediaFailures.size === heroMediaRequested.size) {
+        clearTimeout(heroSafetyTimer);
+        markBootReady('heroReady');
+      }
+    }
+    function armHeroSafetyTimeout() {
+      clearTimeout(heroSafetyTimer);
+      if (!heroMediaRequested.size) { markBootReady('heroReady'); return; }
+      heroSafetyTimer = setTimeout(() => {
+        setBootStatus('OPENING PORTFOLIO / 影像继续载入');
+        markBootReady('heroReady');
+      }, 15000);
+    }
+    bootRetry.addEventListener('click', () => {
+      setBootStatus('LOADING VISUAL / 影像加载中');
+      loadPortfolio();
+    });
+
+    function validatePortfolio(value) {
+      if (!value || typeof value !== 'object' || !value.profile || !Array.isArray(value.projects)) throw new Error('作品资料格式不正确。');
+      for (const key of ['name', 'brand', 'title', 'intro', 'email', 'wechat', 'resumeUrl']) {
+        if (typeof value.profile[key] !== 'string') throw new Error('个人资料格式不正确。');
+      }
+      const ids = new Set();
+      const stringArray = (item) => Array.isArray(item) && item.every((entry) => typeof entry === 'string');
+      for (const project of value.projects) {
+        if (!project || typeof project !== 'object') throw new Error('作品格式不正确。');
+        for (const key of ['id', 'title', 'subtitle', 'category', 'direction', 'cover', 'sourceImage', 'stylingImage']) {
+          if (typeof project[key] !== 'string') throw new Error('作品字段格式不正确。');
+        }
+        if (!project.id || !project.title || !project.category || ids.has(project.id)) throw new Error('作品需要唯一编号、标题和品类。');
+        if (!stringArray(project.seasons) || !project.seasons.length || !project.seasons.every((item) => SEASONS.includes(item)) || !stringArray(project.roles) || !stringArray(project.gallery)) throw new Error('作品分类格式不正确。');
+        if (project.coverRatio !== undefined && !['1 / 1', '3 / 4', '4 / 5'].includes(project.coverRatio)) throw new Error('作品画幅格式不正确。');
+        ids.add(project.id);
+      }
+      return value;
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const time = [now.getHours(), now.getMinutes(), now.getSeconds()].map((value) => String(value).padStart(2, '0')).join(':');
+      const offset = -now.getTimezoneOffset();
+      const hours = String(Math.floor(Math.abs(offset) / 60)).padStart(2, '0');
+      const minutes = String(Math.abs(offset) % 60).padStart(2, '0');
+      const zone = `UTC${offset >= 0 ? '+' : '-'}${hours}:${minutes}`;
+      const day = new Intl.DateTimeFormat('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }).format(now).replaceAll(',', '');
+      const text = `${time} (${zone}) ${day}`;
+      $('#clock-text').textContent = text;
+      $('#mobile-clock').textContent = text;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    function wake() {
+      if (!raf && !document.hidden) raf = requestAnimationFrame(animate);
+    }
+    function measure() {
+      const process = $('#process');
+      const spacer = $('#loop-scroll-spacer');
+      metrics = {
+        heroHeight: Math.max(1, $('.hero-spacer').offsetHeight),
+        processTop: process.offsetTop,
+        processHeight: process.offsetHeight,
+        revealStart: $('#season-experience').offsetTop - innerHeight,
+        revealEnd: $('#season-experience').offsetTop + spacer.offsetHeight,
+        width: innerWidth,
+        height: innerHeight,
+      };
+      if (innerWidth > 1024 && state.menuOpen) toggleMenu(false);
+      wake();
+    }
+
+    function primeVideo() {
+      if (reducedMotion || videoPrimed || videoPriming || !video.src || video.readyState < 1) return;
+      videoPriming = true;
+      const play = video.play();
+      Promise.resolve(play).then(() => { video.pause(); videoPrimed = true; }).catch(() => { video.pause(); }).finally(() => { videoPriming = false; wake(); });
+    }
+    poster.addEventListener('load', async () => {
+      try { await poster.decode(); } catch { /* load 已成功时仍可交给浏览器完成绘制。 */ }
+      background.classList.add('poster-ready');
+      markHeroMediaReady('poster');
+    });
+    poster.addEventListener('error', () => { background.classList.remove('poster-ready'); markHeroMediaFailed('poster'); });
+    video.addEventListener('loadedmetadata', () => { video.pause(); videoPrimed = false; primeVideo(); measure(); });
+    video.addEventListener('loadeddata', () => {
+      background.classList.add('video-ready');
+      video.pause();
+      primeVideo();
+      requestAnimationFrame(() => requestAnimationFrame(() => markHeroMediaReady('video')));
+      wake();
+    });
+    video.addEventListener('seeked', wake);
+    video.addEventListener('canplay', wake);
+    video.addEventListener('error', () => { background.classList.remove('video-ready'); $('#hero-credit').textContent = background.classList.contains('poster-ready') ? '静态首屏影像' : '首屏影像待更新'; markHeroMediaFailed('video'); });
+    document.addEventListener('touchstart', primeVideo, { passive: true, once: true });
+    document.addEventListener('pointerdown', primeVideo, { passive: true, once: true });
+
+    function setSeasonIndex(index) {
+      if (activeIndex === index) return;
+      activeIndex = index;
+      $('#season-progress').textContent = `${String(index + 1).padStart(2, '0')} / 04`;
+      $('#season-prev').disabled = index === 0;
+      $('#season-next').disabled = index === 3;
+      clearTimeout(symbolTimer);
+      symbolFading = true;
+      symbol.style.opacity = '0';
+      symbolTimer = setTimeout(() => {
+        const symbols = ['◇', '≠', '↟', '✦', '⊹', '∧', '⟡', '∴', '⟶', '∿'].filter((character) => character !== symbol.textContent);
+        symbol.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        symbolFading = false;
+        wake();
+      }, reducedMotion ? 0 : 150);
+    }
+
+    function animate(now) {
+      raf = 0;
+      const y = scrollY;
+      const hero = clamp(y / metrics.heroHeight);
+      const process = clamp((y + metrics.height / 2 - metrics.processTop - metrics.processHeight / 2) / ((metrics.processHeight + metrics.height) / 2), -1.2, 1.2);
+      const reveal = clamp((y - metrics.revealStart) / 700);
+      const card = clamp((y - metrics.revealStart - 700) / 900, 0, 3);
+      smoothHero = reducedMotion ? hero : lerp(smoothHero, hero, .12);
+      smoothParallax = reducedMotion ? 0 : lerp(smoothParallax, process, .12);
+      smoothReveal = reducedMotion ? reveal : lerp(smoothReveal, reveal, .15);
+      smoothCard = reducedMotion ? card : lerp(smoothCard, card, .15);
+      const titleProgress = clamp(smoothHero / .85);
+      const titleOpacity = 1 - clamp((titleProgress - .3) / .7);
+      title.style.transform = reducedMotion ? 'none' : `translate3d(0,${-150 * titleProgress}px,0) scale(${1 - .2 * titleProgress})`;
+      title.style.filter = reducedMotion ? 'none' : `blur(${24 * titleProgress}px)`;
+      title.style.opacity = String(titleOpacity * (1 - smoothReveal));
+      title.setAttribute('aria-hidden', String(titleOpacity < .02));
+      $('#hero-meta').style.opacity = String(clamp(1 - smoothHero * 4));
+      $('#hero-meta').setAttribute('aria-hidden', String(smoothHero > .25));
+      $('#hero-scroll-cue').style.opacity = String(clamp(1 - smoothHero * 5));
+      $('#hero-scroll-cue').style.visibility = smoothHero < .2 ? 'visible' : 'hidden';
+      $('#hero-progress').style.transform = `scaleX(${hero})`;
+      $('#hero-progress').style.opacity = hero >= 1 ? '0' : '1';
+
+      let needsVideoFrame = false;
+      if (Number.isFinite(video.duration) && video.duration > 0 && video.readyState >= 2) {
+        const target = reducedMotion ? 0 : hero * Math.max(0, video.duration - .04);
+        smoothVideoTime = reducedMotion ? 0 : lerp(smoothVideoTime, target, .12);
+        if (!videoPriming && !video.seeking && now - lastSeek >= 30 && Math.abs(video.currentTime - smoothVideoTime) > .025) {
+          try { video.currentTime = clamp(smoothVideoTime, 0, Math.max(0, video.duration - .04)); lastSeek = now; } catch { /* 尚未可寻址的媒体将在 canplay 后重试。 */ }
+        }
+        needsVideoFrame = Math.abs(target - smoothVideoTime) > .015 || (!video.seeking && Math.abs(video.currentTime - smoothVideoTime) > .04);
+      }
+
+      const processNear = y + metrics.height > metrics.processTop - 300 && y < metrics.processTop + metrics.processHeight + 300;
+      if (processNear || reducedMotion) {
+        for (const item of parallaxItems) {
+          const speed = Number(item.dataset.speed);
+          const drift = Number(item.dataset.drift);
+          const rotation = Number(item.dataset.rot);
+          item.style.transform = `translate3d(${smoothParallax * speed * drift * 520}px,${-smoothParallax * speed * 520}px,0) rotate(${smoothParallax * rotation * 4}deg)`;
+        }
+      }
+      const showOverlay = reducedMotion || (y >= metrics.revealStart - 2 && y < metrics.revealEnd);
+      overlay.classList.toggle('is-active', showOverlay);
+      const overlayInteractive = reducedMotion || (showOverlay && smoothReveal > .95);
+      overlay.inert = !overlayInteractive;
+      overlay.setAttribute('aria-hidden', String(!overlayInteractive));
+      const edge = (1 - easeInOutCubic(smoothReveal)) * 50;
+      const clip = `inset(${edge}% ${edge}% ${edge}% ${edge}% round 3px)`;
+      overlay.style.clipPath = reducedMotion ? 'none' : clip;
+      overlay.style.webkitClipPath = reducedMotion ? 'none' : clip;
+      track.style.transform = reducedMotion ? 'none' : `translate3d(${-smoothCard * metrics.width}px,0,0)`;
+      const index = Math.round(smoothCard);
+      setSeasonIndex(index);
+      symbol.style.opacity = showOverlay && smoothReveal > .15 && !symbolFading && !reducedMotion ? '1' : '0';
+      $$('.season-card').forEach((item, i) => { item.inert = !reducedMotion && i !== index; item.setAttribute('aria-hidden', String(!reducedMotion && i !== index)); });
+      for (const image of seasonImages) image.style.transform = reducedMotion ? 'none' : `translate3d(${(Number(image.dataset.index) - smoothCard) * metrics.width * .18}px,0,0)`;
+      const settling = Math.abs(smoothHero - hero) > .0002 || Math.abs(smoothReveal - reveal) > .0002 || Math.abs(smoothCard - card) > .0002 || (processNear && !reducedMotion && Math.abs(smoothParallax - process) > .0003);
+      if (settling || needsVideoFrame) wake();
+    }
+
+    function collagePlaceholder(item) {
+      return `<div class="collage-placeholder"><span aria-hidden="true">${item.label.slice(0,2)}</span><span class="collage-caption">${item.label}<br />素材预留</span></div>`;
+    }
+    function renderCollage() {
+      const media = state.data?.experience?.collage || {};
+      for (const layer of ['back', 'front']) {
+        $(`#collage-${layer}`).innerHTML = COLLAGE.filter((item) => item.layer === layer).map((item) => {
+          const url = assetURL(media[item.key]);
+          return `<div class="parallax-item item-${item.key}" data-key="${item.key}" data-speed="${item.speed}" data-drift="${item.drift}" data-rot="${item.rot}">${url ? `<img src="${escapeHTML(url)}" alt="" decoding="async" />` : collagePlaceholder(item)}</div>`;
+        }).join('');
+      }
+      parallaxItems = $$('.parallax-item');
+    }
+    function renderSeasonCards() {
+      const media = state.data?.experience?.seasons || {};
+      track.innerHTML = SEASONS.map((season, index) => {
+        const url = assetURL(media[season]);
+        const count = state.data?.projects.filter((project) => project.seasons.includes(season)).length || 0;
+        return `<article class="season-card" aria-label="${season}季展映" style="--season-color:${SEASON_COLORS[season]}"><div class="season-poster" aria-hidden="true"><span class="season-letters">${SEASON_EN[season].slice(0,2)}</span><span class="season-empty-label">${season}季影像 / 待更新</span></div>${url ? `<img class="season-image" data-index="${index}" src="${escapeHTML(url)}" alt="${season}季精选作品" decoding="async" />` : ''}<span class="season-code">SEASON 0${index + 1} / ${SEASON_EN[season]}</span><div class="season-info"><span class="cell">${SEASON_TITLES[season]} ${['⟡','⊹','↟','◇'][index]}</span><span class="cell">${String(count).padStart(2,'0')} 组作品位</span><a href="#collection" class="cell" data-browse-season="${season}">浏览${season}季 ↗</a></div></article>`;
+      }).join('');
+      seasonImages = $$('.season-image');
+      measure();
+    }
+
+    function frameMarkup(src, label, number, season, ratio = '1 / 1', detail = false) {
+      const url = assetURL(src);
+      const color = SEASON_COLORS[season] || '#e0e2d8';
+      const safeRatio = ['1 / 1','3 / 4','4 / 5'].includes(ratio) ? ratio : '1 / 1';
+      return `<div class="image-frame ${url ? '' : 'empty'} ${detail ? 'detail' : ''}" data-frame-label="${escapeHTML(label)}" data-frame-number="${escapeHTML(number)}" style="--frame-color:${color};--ratio:${safeRatio}">${url ? `<img src="${escapeHTML(url)}" alt="${escapeHTML(label)}" loading="lazy" decoding="async" />` : `<span class="frame-number" aria-hidden="true">${escapeHTML(number)}</span><span class="frame-note">作品待更新</span><span class="frame-caption">${escapeHTML(label)}</span>`}</div>`;
+    }
+    function currentProjects() {
+      return (state.data?.projects || []).filter((project) => (state.season === '全部' || project.seasons.includes(state.season)) && (state.category === '全部' || project.category === state.category));
+    }
+    function renderCollection() {
+      if (!state.data) return;
+      const focus = document.activeElement;
+      const focusSeason = focus?.dataset.season;
+      const focusCategory = focus?.dataset.category;
+      const projects = state.data.projects;
+      const categories = [...new Set(projects.map((project) => project.category))];
+      const ordered = [...CATEGORY_ORDER.filter((item) => categories.includes(item)), ...categories.filter((item) => !CATEGORY_ORDER.includes(item))];
+      $('#season-filters').innerHTML = '<span class="filter-label">季节</span>' + ['全部', ...SEASONS].map((season) => {
+        const count = projects.filter((project) => (season === '全部' || project.seasons.includes(season)) && (state.category === '全部' || project.category === state.category)).length;
+        return `<button class="cell filter-button" type="button" data-season="${season}" aria-label="筛选${season === '全部' ? '全部季节' : season + '季'}" aria-pressed="${state.season === season}">${season === '全部' ? '全部' : season + '季'} <sup>${String(count).padStart(2,'0')}</sup></button>`;
+      }).join('');
+      $('#category-filters').innerHTML = '<span class="filter-label">品类</span>' + ['全部', ...ordered].map((category) => `<button class="cell filter-button" type="button" data-category="${escapeHTML(category)}" aria-label="筛选${escapeHTML(category === '全部' ? '全部品类' : category)}" aria-pressed="${state.category === category}">${escapeHTML(category)}</button>`).join('');
+      const filtered = currentProjects();
+      const filled = projects.filter((project) => !!assetURL(project.cover)).length;
+      $('#collection-summary').textContent = `${projects.length} 组作品位 / ${filled ? `${filled} 组已更新` : '持续更新'}`;
+      $('#result-count').textContent = `${state.season === '全部' ? '全部季节' : state.season + '季'} / ${state.category === '全部' ? '全部品类' : state.category} — ${filtered.length} 组${filled ? '作品' : '作品位'}`;
+      $('#work-total').textContent = `${projects.length} LOOKS / IN THE MAKING`;
+      $('#clear-filters').hidden = state.season === '全部' && state.category === '全部';
+      const grid = $('#work-grid');
+      grid.className = `work-grid${state.compact ? ' compact' : ''}`;
+      if (filtered.length) {
+        grid.innerHTML = filtered.map((project) => {
+          const number = String(projects.indexOf(project) + 1).padStart(2,'0');
+          const label = `${SEASON_EN[project.seasons[0]]} / ${CATEGORY_EN[project.category] || project.category}`;
+          return `<button class="work-card" type="button" data-project="${escapeHTML(project.id)}" aria-label="查看作品：${escapeHTML(project.title)}"><div class="work-image-wrapper">${frameMarkup(project.cover, label, number, project.seasons[0], project.coverRatio)}<span class="work-top-tag">LOOK ${number}</span><span class="work-open-icon" aria-hidden="true">↗</span></div><div class="work-meta"><h3>${escapeHTML(project.title)}</h3><span>${escapeHTML(project.seasons.join(' / '))} · ${escapeHTML(project.category)}</span></div><p class="work-subtitle">${escapeHTML(project.subtitle)}</p></button>`;
+        }).join('');
+      } else {
+        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><h3>这一页，留给新的灵感。</h3><p>暂时没有符合这组分类的作品，换个季节或品类看看。</p><button class="cell dark" type="button" data-reset-filters>查看全部作品 ↗</button></div>`;
+      }
+      if (focusSeason !== undefined) $$('[data-season]').find((item) => item.dataset.season === focusSeason)?.focus({ preventScroll: true });
+      if (focusCategory !== undefined) $$('[data-category]').find((item) => item.dataset.category === focusCategory)?.focus({ preventScroll: true });
+      measure();
+    }
+    function resetFilters() { state.season = '全部'; state.category = '全部'; renderCollection(); }
+    $('#season-filters').addEventListener('click', (event) => { const button = event.target.closest('[data-season]'); if (button) { state.season = button.dataset.season; renderCollection(); } });
+    $('#category-filters').addEventListener('click', (event) => { const button = event.target.closest('[data-category]'); if (button) { state.category = button.dataset.category; renderCollection(); } });
+    $('#clear-filters').addEventListener('click', resetFilters);
+    $$('.layout-button').forEach((button) => button.addEventListener('click', () => { state.compact = button.dataset.layout === 'compact'; $('#work-grid').classList.toggle('compact', state.compact); $$('.layout-button').forEach((item) => item.setAttribute('aria-pressed', String(item === button))); }));
+    $('#work-grid').addEventListener('click', (event) => {
+      if (event.target.closest('[data-reset-filters]')) return resetFilters();
+      const button = event.target.closest('[data-project]');
+      if (button) openProject(state.data.projects.find((project) => project.id === button.dataset.project));
+    });
+    track.addEventListener('click', (event) => { const link = event.target.closest('[data-browse-season]'); if (link) { state.season = link.dataset.browseSeason; state.category = '全部'; renderCollection(); } });
+    function scrollSeason(step) {
+      const index = clamp(activeIndex + step, 0, 3);
+      scrollTo({ top: Math.max(0, metrics.revealStart + 700 + index * 900), behavior: reducedMotion ? 'instant' : 'smooth' });
+    }
+    $('#season-prev').addEventListener('click', () => scrollSeason(-1));
+    $('#season-next').addEventListener('click', () => scrollSeason(1));
+    overlay.addEventListener('keydown', (event) => { if (!reducedMotion && ['ArrowLeft','ArrowRight'].includes(event.key)) { event.preventDefault(); scrollSeason(event.key === 'ArrowRight' ? 1 : -1); } });
+
+    function openProject(project) {
+      if (!project) return;
+      previousFocus = document.activeElement;
+      state.project = project;
+      state.stage = 'cover';
+      const number = String(state.data.projects.indexOf(project) + 1).padStart(2,'0');
+      $('#dialog-body').innerHTML = `<div class="dialog-main"><div><div class="image-stages" role="group" aria-label="作品图片类型">${STAGES.map((stage) => `<button type="button" class="cell" data-stage="${stage.key}" aria-pressed="${stage.key === 'cover'}">${stage.label}</button>`).join('')}</div><div id="detail-image"></div></div><div class="dialog-copy"><span class="micro">LOOK ${number} / ${project.seasons.map((season) => SEASON_EN[season]).join(' · ')}</span><h2 id="detail-title">${escapeHTML(project.title)}</h2><p>${escapeHTML(project.subtitle)}</p>${project.cover ? '' : '<span class="cell micro" style="margin-top:20px">案例筹备中</span>'}<div class="dialog-field"><h3>创作方向 / DIRECTION</h3><p>${escapeHTML(project.direction)}</p></div><div class="dialog-field"><h3>创作环节 / DISCIPLINES</h3><div class="dialog-tags">${project.roles.map((role) => `<span class="cell">${escapeHTML(role)}</span>`).join('')}</div></div><div class="dialog-field"><p>${escapeHTML(project.seasons.join(' / '))} · ${escapeHTML(project.category)}</p></div></div></div>${project.gallery.length ? `<div class="dialog-gallery"><h3>更多画面 / VISUAL DETAILS</h3><div class="detail-grid">${project.gallery.map((src,i) => frameMarkup(src, `${project.title} · 细节 ${i + 1}`, String(i + 1).padStart(2,'0'), project.seasons[0], '3 / 4', true)).join('')}</div></div>` : ''}`;
+      renderDetailImage();
+      dialogOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      dialog.showModal();
+    }
+    function renderDetailImage() {
+      if (!state.project) return;
+      const project = state.project;
+      const number = String(state.data.projects.indexOf(project) + 1).padStart(2,'0');
+      const stage = STAGES.find((item) => item.key === state.stage);
+      $('#detail-image').innerHTML = frameMarkup(project[stage.key], stage.en, number, project.seasons[0], stage.key === 'cover' ? project.coverRatio || '1 / 1' : '3 / 4', true);
+      $$('[data-stage]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.stage === state.stage)));
+    }
+    $('#dialog-body').addEventListener('click', (event) => { const button = event.target.closest('[data-stage]'); if (button) { state.stage = button.dataset.stage; renderDetailImage(); } });
+    $('#dialog-close').addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+    dialog.addEventListener('close', () => { state.project = null; document.body.style.overflow = dialogOverflow; previousFocus?.focus({ preventScroll: true }); measure(); });
+
+    function toggleMenu(open) {
+      if (open === state.menuOpen) return;
+      state.menuOpen = open;
+      const menu = $('#mobile-menu-overlay');
+      const button = $('#menu-toggle-btn');
+      menu.classList.toggle('active', open);
+      menu.inert = !open;
+      menu.setAttribute('aria-hidden', String(!open));
+      button.textContent = open ? 'Close' : 'Menu';
+      button.setAttribute('aria-label', open ? '关闭菜单' : '打开菜单');
+      button.setAttribute('aria-expanded', String(open));
+      $('#page-content').inert = open;
+      $('#contact').inert = open;
+      $('#cell-brand').tabIndex = open ? -1 : 0;
+      $('#hero-scroll-cue').tabIndex = open ? -1 : 0;
+      if (open) { menuOverflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; menu.querySelector('a').focus(); }
+      else { document.body.style.overflow = menuOverflow; (innerWidth > 1024 ? $('#cell-brand') : button).focus({ preventScroll: true }); }
+    }
+    $('#menu-toggle-btn').addEventListener('click', () => toggleMenu(!state.menuOpen));
+    $('#cell-brand').addEventListener('click', () => { if (state.menuOpen) toggleMenu(false); });
+    $('#mobile-menu-overlay').addEventListener('click', (event) => { if (event.target.closest('a') || event.target === $('#mobile-menu-overlay')) toggleMenu(false); });
+    document.addEventListener('keydown', (event) => {
+      if (!state.menuOpen) return;
+      if (event.key === 'Escape') { event.preventDefault(); toggleMenu(false); }
+      if (event.key === 'Tab') {
+        const focusable = [$('#menu-toggle-btn'), ...$$('#mobile-menu-overlay a')];
+        const index = focusable.indexOf(document.activeElement);
+        if (event.shiftKey && index <= 0) { event.preventDefault(); focusable.at(-1).focus(); }
+        else if (!event.shiftKey && index === focusable.length - 1) { event.preventDefault(); focusable[0].focus(); }
+      }
+    });
+
+    function renderProfile() {
+      const profile = state.data.profile;
+      const brand = profile.name || profile.brand || '衣着之间';
+      $('#boot-brand-name').textContent = brand;
+      $('#cell-brand').innerHTML = `${escapeHTML(brand)}<sup>™</sup>`;
+      document.title = `${brand}™ · ${profile.title}作品集`;
+      $('#profile-intro').textContent = profile.intro;
+      $('#copyright').textContent = `© ${new Date().getFullYear()} ${brand} / PERSONAL PORTFOLIO`;
+      const details = $('#contact-details');
+      details.innerHTML = '<p>期待下一次，一起创作。</p>';
+      if (profile.email) details.insertAdjacentHTML('beforeend', `<a class="cell" href="mailto:${escapeHTML(profile.email)}">${escapeHTML(profile.email)} ↗</a>`);
+      if (profile.wechat) details.insertAdjacentHTML('beforeend', `<button class="cell" type="button" id="copy-wechat">微信：${escapeHTML(profile.wechat)} / 复制</button>`);
+      if (assetURL(profile.resumeUrl)) details.insertAdjacentHTML('beforeend', `<a class="cell" href="${escapeHTML(assetURL(profile.resumeUrl))}" target="_blank" rel="noreferrer">查看个人简历 ↗</a>`);
+      if (!profile.email && !profile.wechat) details.insertAdjacentHTML('beforeend', '<p>联系方式待补充</p>');
+      $('#copy-wechat')?.addEventListener('click', async () => {
+        const button = $('#copy-wechat');
+        try { await navigator.clipboard.writeText(profile.wechat); button.textContent = '微信号已复制 ✓'; $('#copy-status').textContent = '微信号已复制'; clearTimeout(copyTimer); copyTimer = setTimeout(() => { button.textContent = `微信：${profile.wechat} / 复制`; }, 2200); }
+        catch { button.textContent = `微信：${profile.wechat}`; $('#copy-status').textContent = '复制未成功，可以手动复制微信号。'; }
+      });
+      const experience = state.data.experience || {};
+      const videoURL = assetURL(experience.heroVideo);
+      const posterURL = assetURL(experience.heroPoster);
+      heroMediaRequested.clear();
+      heroMediaFailures.clear();
+      if (posterURL) {
+        heroMediaRequested.add('poster');
+        poster.src = posterURL;
+      }
+      if (videoURL) {
+        heroMediaRequested.add('video');
+        if (reducedMotion) video.removeAttribute('autoplay');
+        video.src = videoURL;
+        if (posterURL) video.poster = posterURL;
+        video.load();
+      }
+      armHeroSafetyTimeout();
+      $('#hero-credit').textContent = typeof experience.heroLabel === 'string' && experience.heroLabel ? experience.heroLabel : videoURL || posterURL ? '个人作品影像' : '首屏影像待更新';
+    }
+    async function loadPortfolio() {
+      const loading = $('#loading-state');
+      bootState.portfolioReady = false;
+      setBootStatus('LOADING VISUAL / 影像加载中');
+      loading.hidden = false;
+      loading.setAttribute('role', 'status');
+      loading.textContent = '正在展开作品索引…';
+      try {
+        const response = await fetch('./portfolio.json', { cache: 'no-cache' });
+        if (!response.ok) throw new Error('作品资料暂时无法加载。');
+        state.data = validatePortfolio(await response.json());
+        renderProfile(); renderCollection(); renderCollage(); renderSeasonCards();
+        $('#collection-content').hidden = false;
+        loading.hidden = true;
+        measure();
+        markBootReady('portfolioReady');
+      } catch (error) {
+        setBootStatus('LOAD FAILED / 作品资料加载失败', true);
+        loading.setAttribute('role', 'alert');
+        loading.textContent = error instanceof Error ? error.message : '作品资料暂时无法加载。';
+        const retry = document.createElement('button'); retry.type = 'button'; retry.className = 'cell'; retry.textContent = '重新加载 ↗'; retry.style.margin = '20px auto 0'; retry.style.display = 'flex'; retry.addEventListener('click', loadPortfolio); loading.append(retry);
+      }
+    }
+
+    document.addEventListener('error', (event) => {
+      const image = event.target;
+      if (!(image instanceof HTMLImageElement)) return;
+      const frame = image.closest('.image-frame');
+      if (frame) {
+        frame.classList.add('empty');
+        frame.innerHTML = `<span class="frame-number" aria-hidden="true">${escapeHTML(frame.dataset.frameNumber)}</span><span class="frame-note">图片暂不可用</span><span class="frame-caption">${escapeHTML(frame.dataset.frameLabel)}</span>`;
+      } else if (image.closest('.parallax-item')) {
+        const item = image.closest('.parallax-item');
+        item.innerHTML = collagePlaceholder(COLLAGE.find((data) => data.key === item.dataset.key));
+      } else if (image.classList.contains('season-image')) { image.remove(); seasonImages = $$('.season-image'); }
+    }, true);
+    reducedMedia.addEventListener('change', (event) => {
+      reducedMotion = event.matches;
+      video.pause();
+      if (reducedMotion && video.readyState >= 1) video.currentTime = 0;
+      measure();
+    });
+    addEventListener('scroll', wake, { passive: true });
+    addEventListener('resize', measure);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) { cancelAnimationFrame(raf); raf = 0; video.pause(); } else wake(); });
+    new ResizeObserver(measure).observe(document.body);
+    document.fonts.ready.then(measure);
+    renderCollage();
+    renderSeasonCards();
+    loadPortfolio();
+    measure();
+  </script>
+</body>
+</html>
