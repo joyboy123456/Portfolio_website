@@ -285,48 +285,51 @@ async function renderWorkCard(work, painted, thumbOf) {
         ? work.images.slice(0, 2).map((im) => im.src)
         : [work.src];
     const imgs = (await Promise.all(srcs.map((s) => loadImage(thumbOf(s))))).filter(Boolean);
-    let cursor = y + pad;
-    const maxImgH = imgs.length > 1 ? (h * 0.62) / 2 : h * 0.62;
-    imgs.forEach((img) => {
-        const r = drawContain(ctx, img, x + pad, cursor, w - pad * 2, maxImgH);
-        sketchFrame(ctx, r.x - 6, r.y - 6, r.w + 12, r.h + 12, rand);
-        cursor += r.h + 34;
+    const cx = x + w / 2;
+    const boxW = w - pad * 2;
+    const maxImgH = imgs.length > 1 ? (h * 0.6) / 2 : h * 0.6;
+    const sizes = imgs.map((img) => {
+        const sc = Math.min(boxW / img.width, maxImgH / img.height);
+        return { img, w: img.width * sc, h: img.height * sc };
     });
 
-    // 文字说明（全部来自 portfolio.json）
-    ctx.fillStyle = INK;
-    ctx.textAlign = 'center';
+    // 文字（全部来自 portfolio.json）：[字号, 颜色, 文本, 行高]
+    const lines = [];
     ctx.textBaseline = 'top';
-    const cx = x + w / 2;
-    cursor += 16;
     if (work.kind === 'case') {
-        ctx.font = font(60);
-        ctx.fillText(`案例 ${work.number}`, cx, cursor);
-        cursor += 84;
+        lines.push([76, INK, `案例 ${work.number}`, 100]);
         const meta = [work.client, work.period].filter(Boolean).join(' · ');
-        if (meta) {
-            ctx.font = font(44);
-            ctx.fillStyle = SOFT_INK;
-            ctx.fillText(meta, cx, cursor);
-            cursor += 66;
-        }
-        ctx.fillStyle = INK;
-        ctx.font = font(42);
-        const text = work.direction || work.focus;
-        wrapText(ctx, text, w - pad * 3).slice(0, 3).forEach((ln) => { ctx.fillText(ln, cx, cursor); cursor += 58; });
+        if (meta) lines.push([50, SOFT_INK, meta, 74]);
+        ctx.font = font(52);
+        wrapText(ctx, work.direction || work.focus, w - pad * 3).slice(0, 3).forEach((ln) => lines.push([52, INK, ln, 70]));
     } else {
-        ctx.font = font(70);
-        ctx.fillText(work.group, cx, cursor);
-        cursor += 92;
-        ctx.font = font(42);
-        ctx.fillStyle = SOFT_INK;
+        lines.push([96, INK, work.group, 122]);
         const meta = [work.groupEn, work.year, work.pageTotal ? `${work.pageNo} / ${work.pageTotal}` : work.pageNo].filter(Boolean).join(' · ');
-        ctx.fillText(meta, cx, cursor);
-        cursor += 66;
-        ctx.fillStyle = INK;
-        ctx.font = font(42);
-        wrapText(ctx, work.alt, w - pad * 3).slice(0, 3).forEach((ln) => { ctx.fillText(ln, cx, cursor); cursor += 58; });
+        if (meta) lines.push([48, SOFT_INK, meta, 72]);
+        ctx.font = font(54);
+        wrapText(ctx, work.alt, w - pad * 3).slice(0, 3).forEach((ln) => lines.push([54, INK, ln, 72]));
     }
+
+    // 整体垂直居中
+    const gapImg = 40;
+    const imgsH = sizes.reduce((acc, sz) => acc + sz.h, 0) + Math.max(0, sizes.length - 1) * gapImg;
+    const textH = lines.reduce((acc, l) => acc + l[3], 0);
+    const total = imgsH + (sizes.length ? 56 : 0) + textH;
+    let cursor = y + Math.max(pad, (h - total) / 2);
+    sizes.forEach((sz) => {
+        const dx = cx - sz.w / 2;
+        ctx.drawImage(sz.img, dx, cursor, sz.w, sz.h);
+        sketchFrame(ctx, dx - 6, cursor - 6, sz.w + 12, sz.h + 12, rand);
+        cursor += sz.h + gapImg;
+    });
+    if (sizes.length) cursor += 56 - gapImg;
+    ctx.textAlign = 'center';
+    lines.forEach(([size, color, text, lh]) => {
+        ctx.font = font(size);
+        ctx.fillStyle = color;
+        ctx.fillText(text, cx, cursor);
+        cursor += lh;
+    });
     ctx.textAlign = 'left';
     return canvas;
 }
