@@ -13,7 +13,8 @@ import GalleryClouds from './GalleryClouds';
 import { useAudio } from '../../../../context/AudioManager';
 import { usePaintMaterial } from './usePaintMaterial';
 import { usePortfolioSuspense } from '../../../../hooks/usePortfolioData';
-import { loadLookCardTextures } from '../../../../utils/generatedTextures';
+import { loadWorkCardTextures } from '../../../../utils/generatedTextures';
+import { getGalleryWorks, thumbOf } from '../../../../content/portfolio';
 
 // Reusable Vector3 to avoid allocations in useFrame
 const _tempScale = new THREE.Vector3();
@@ -34,28 +35,83 @@ export const GALLERY_INTERACTION_AUDIO_SETTINGS = {
     rolloff: 2        // How fast the sound fades away (exponential)
 };
 
-// 作品数据来自 public/portfolio.json（12 组造型）。
-// 卡片正面贴图由 utils/generatedTextures.js 用 canvas 生成：
-// 有图片时显示真实作品图，没有图片时显示手绘占位卡（不使用假图）。
-const EMPTY_PROJECT = {
-    id: 'empty', number: '00', title: '作品整理中', subtitle: '', seasons: [], category: '',
-    direction: '作品正在整理中，很快就会在这里展出。', roles: [], cover: '', images: [],
+// 作品数据来自 public/portfolio.json → story.cases（3 个案例）+ story.archive（作品集页面）。
+// 卡片正面贴图由 utils/generatedTextures.js 用 canvas 生成，只使用真实作品图；
+// 没有图片的 12 组造型不在作品墙出现（它们以文字形式出现在“创作”房间的季节手机里）。
+const EMPTY_WORK = {
+    kind: 'page', id: 'empty', src: '', alt: '作品正在整理中，很快就会在这里展出。', label: '',
+    group: '作品整理中', groupEn: '', year: '', pageNo: '', pageTotal: '',
 };
 
-// 角色标签拆成两行，放进卡片背面的四个小方格
-const splitRole = (role) => {
-    const r = role.replace(/\s+/g, '');
-    const m = r.match(/^([A-Za-z0-9]+)(.*)$/);
-    if (m && m[2]) {
-        const head = m[1] + m[2].slice(0, 2);
-        const tail = m[2].slice(2);
-        return tail ? `${head}\n${tail}` : head;
+// 卡片正面标题
+const workTitle = (w) => (w.kind === 'case' ? w.title : `${w.group} · ${w.pageNo}`);
+
+// 卡片背面：上方“说明”区
+const workDetails = (w) => {
+    if (w.kind === 'case') {
+        return [
+            w.focus,
+            w.challenge && `挑战：${w.challenge}`,
+            w.decision && `决策：${w.decision}`,
+            w.contribution && `我的工作：${w.contribution}`,
+        ].filter(Boolean).join('\n');
     }
-    const half = Math.ceil(r.length / 2);
-    return r.length > 3 ? `${r.slice(0, half)}\n${r.slice(half)}` : r;
+    return w.alt || '';
 };
 
-const PROJECT_COUNT = 12; // 12 张卡片循环（与 portfolio.json 中的 12 组作品对应）
+// 卡片背面：下方“信息”区
+const workMeta = (w) => {
+    if (w.kind === 'case') {
+        const lines = [
+            w.client && `客户：${w.client}`,
+            w.period && `时间：${w.period}`,
+            w.role && `角色：${w.role}`,
+            w.deliverables && `交付：${w.deliverables}`,
+        ].filter(Boolean);
+        if (lines.length === 0 && w.direction) lines.push(`方向：${w.direction}`);
+        if (w.evidence?.caption && lines.length < 4) lines.push(w.evidence.caption);
+        return lines.join('\n');
+    }
+    return [
+        w.groupEn ? `${w.group}（${w.groupEn}）` : w.group,
+        [w.year, w.pageTotal ? `第 ${w.pageNo} / ${w.pageTotal} 页` : ''].filter(Boolean).join(' · '),
+    ].filter(Boolean).join('\n');
+};
+
+// 点击“查看作品图”后打开的作品网格（带灯箱）
+const buildWorkOverlay = (w, works) => {
+    if (w.kind === 'case') {
+        return {
+            layout: 'certificate_grid',
+            wide: true,
+            lightbox: true,
+            title: w.title,
+            platformConfig: { label: `案例 ${w.number}${w.client ? ` · ${w.client}` : ''}` },
+            items: w.images.map((im) => ({ label: im.label, date: '', image: thumbOf(im.src), full: im.src, url: im.src, natural: true })),
+        };
+    }
+    if (!w.src) return null;
+    // 同一系列的全部页面，被点击的那一页排在最前
+    const group = works.filter((x) => x.kind === 'page' && x.group === w.group);
+    const ordered = [w, ...group.filter((x) => x.id !== w.id)];
+    return {
+        layout: 'certificate_grid',
+        wide: true,
+        lightbox: true,
+        title: `${w.group}作品集`,
+        platformConfig: { label: [w.groupEn, w.year, `${group.length} 页`].filter(Boolean).join(' · ') },
+        items: ordered.map((x) => ({
+            label: `${x.group} · ${x.pageNo}`,
+            date: x.alt,
+            image: thumbOf(x.src),
+            full: x.src,
+            url: x.src,
+            aspect: x.width && x.height ? x.height / x.width : undefined,
+        })),
+    };
+};
+
+const MIN_CARD_COUNT = 12; // 作品少于 12 件时循环补满晾衣绳
 const GAP = 2.5;
 
 // Zmień te wartości aby dopasować proporcje ptaka (legacy ratio 1.41)
@@ -192,8 +248,12 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
 
     // 作品数据（portfolio.json）
     const portfolio = usePortfolioSuspense();
-    const activeProjects = portfolio.projects.length > 0 ? portfolio.projects : [EMPTY_PROJECT];
-    const cardTextures = use(loadLookCardTextures(activeProjects, canHover));
+    const works = useMemo(() => {
+        const list = getGalleryWorks(portfolio);
+        return list.length > 0 ? list : [EMPTY_WORK];
+    }, [portfolio]);
+    const PROJECT_COUNT = Math.max(MIN_CARD_COUNT, works.length);
+    const cardCanvases = use(loadWorkCardTextures(works, canHover, thumbOf));
 
     useEffect(() => {
         const mq = window.matchMedia('(hover: hover)');
@@ -202,23 +262,29 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
         return () => mq.removeEventListener('change', handleHoverChange);
     }, []);
 
-    // Load all project front textures in a flat array
-    const textureUrls = activeProjects.map(p => cardTextures[p.id].front);
-    const projectTextures = useTexture(textureUrls);
+    // canvas → CanvasTexture（不经过 data URL 编码）
+    const { projectTextures, paintedTextures, backTextureRaw } = useMemo(() => {
+        const make = (canvas) => {
+            const t = new THREE.CanvasTexture(canvas);
+            t.colorSpace = THREE.SRGBColorSpace;
+            t.anisotropy = 4;
+            return t;
+        };
+        const fronts = works.map(w => make(cardCanvases.cards[w.id].front));
+        const painted = works.map((w, i) => (canHover && cardCanvases.cards[w.id].painted !== cardCanvases.cards[w.id].front)
+            ? make(cardCanvases.cards[w.id].painted) : fronts[i]);
+        const back = make(canHover ? cardCanvases.backPainted : cardCanvases.back);
+        return { projectTextures: fronts, paintedTextures: painted, backTextureRaw: back };
+    }, [works, cardCanvases, canHover]);
 
-    // Load painted textures only on desktop, fallback to front if mobile/touch
-    const paintedUrls = activeProjects.map(p => canHover ? cardTextures[p.id].painted : cardTextures[p.id].front);
-    const paintedTextures = useTexture(paintedUrls);
-
-    // Load the universal back texture and the button texture conditionally
-    const backTextureRaw = useTexture(canHover ? '/textures/gallery/tylkartki_painted.webp' : '/textures/gallery/tylkartki.webp');
+    // Button texture (conditional painted version)
     const overlayTextureRaw = useTexture(canHover ? '/textures/gallery/przyciskdotylukartki_painted.webp' : '/textures/gallery/przyciskdotylukartki.webp');
 
     // Construct the full list of projects (repeated) with textures attached
     const projects = useMemo(() => {
         return Array.from({ length: PROJECT_COUNT }).map((_, i) => {
-            const projectIndex = i % activeProjects.length;
-            const projectData = activeProjects[projectIndex];
+            const projectIndex = i % works.length;
+            const projectData = works[projectIndex];
 
             // Extract front texture
             const frontTex = projectTextures[projectIndex];
@@ -246,10 +312,13 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 paintedTexture: (paintedTex !== frontTex && canHover) ? paintedTex : null,
                 backTexture: backTextureRaw,
                 buttonTexture: overlayTextureRaw,
-                roleLabels: (projectData.roles || []).slice(0, 4).map(splitRole),
+                title: workTitle(projectData),
+                detailsText: workDetails(projectData),
+                metaText: workMeta(projectData),
+                overlay: buildWorkOverlay(projectData, works),
             };
         });
-    }, [projectTextures, paintedTextures, backTextureRaw, overlayTextureRaw, activeProjects, canHover]);
+    }, [projectTextures, paintedTextures, backTextureRaw, overlayTextureRaw, works, canHover, PROJECT_COUNT]);
 
     // Function to scroll to a specific project index
     const scrollToIndex = (index, onComplete) => {
@@ -472,6 +541,7 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                             project={project}
                             clothespinTexture={clothespinTexture}
                             total={PROJECT_COUNT}
+                            gap={GAP}
                             currentScroll={currentScroll}
                             materials={materials}
                             curve={curve}
@@ -645,7 +715,7 @@ const FlyingBird = ({ texture }) => {
 };
 
 // Sub-component for individual project cards
-const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, currentScroll, materials, curve, isSelected, scrollToIndex, onClick, isMobile, isTransitioning, paintProgress, roomOrigin }, ref) => {
+const ProjectCard = memo(forwardRef(({ index, project, total, clothespinTexture, currentScroll, materials, curve, isSelected, scrollToIndex, onClick, isMobile, isTransitioning, paintProgress, roomOrigin }, ref) => {
     const cardRef = useRef();
     const paperRef = useRef(); // Ref for the moving part (Paper)
     const materialRef = useRef();
@@ -656,11 +726,12 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
     const detailsTextRef1 = useRef();
     const detailsTextRef2 = useRef();
     const techTextRef = useRef();
+    const metaTextRef = useRef();
     const openTextRef = useRef();
     const [hovered, setHovered] = useState(false);
     const [btnHovered, setBtnHovered] = useState(false);
     const { openOverlay } = useScene();
-    const hasImages = Array.isArray(project.images) && project.images.length > 0;
+    const hasImages = !!project.overlay && project.overlay.items.length > 0;
     const [isAnimating, setIsAnimating] = useState(false);  // True ONLY during flip animation
     const [isScrolling, setIsScrolling] = useState(false);  // True during scroll phase
 
@@ -926,6 +997,7 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                 applyOpacity(detailsTextRef1);
                 applyOpacity(detailsTextRef2);
                 applyOpacity(techTextRef);
+                applyOpacity(metaTextRef);
                 applyOpacity(openTextRef);
             }
         }
@@ -1012,7 +1084,7 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
         // Skip position updates ONLY during flip animation, NOT during scroll
         if (isAnimating || isSelected) return;
 
-        const totalWidth = PROJECT_COUNT * GAP; // GAP is available in scope because we are in the file where GAP is defined
+        const totalWidth = total * GAP;
         let rawX = (index * GAP) - currentScroll.current;
         const halfWidth = totalWidth / 2;
         let displayX = ((rawX + halfWidth) % totalWidth + totalWidth) % totalWidth - halfWidth;
@@ -1022,6 +1094,8 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
         const pointOnCurve = curve.getPointAt(safeU);
 
         cardRef.current.position.set(pointOnCurve.x, pointOnCurve.y, pointOnCurve.z);
+        // 超出晾衣绳两端的卡片隐藏（作品多于 12 件时不会堆在绳子末端）
+        cardRef.current.visible = Math.abs(displayX) <= 16.5;
 
         // Wind / Sway Animation
         const time = state.clock.getElapsedTime();
@@ -1138,12 +1212,7 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                         onClick={(e) => {
                             if (isSelected && !isTransitioning && hasImages) {
                                 e.stopPropagation();
-                                openOverlay({
-                                    layout: 'certificate_grid',
-                                    title: project.title,
-                                    platformConfig: { label: `LOOK ${project.number}` },
-                                    items: project.images.map((src, k) => ({ label: `${project.title} · ${k + 1}`, image: src, url: src })),
-                                });
+                                openOverlay(project.overlay);
                             }
                         }}
                         onPointerEnter={(e) => {
@@ -1180,23 +1249,23 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                         anchorY="middle"
                         fillOpacity={0} // Start hidden
                     >
-                        设计方向
+                        {project.kind === 'case' ? '项目说明' : '作品页'}
                     </Text>
 
                     <Text
                         ref={detailsTextRef2}
                         position={[0, 0.2, 0.01]} // Poniżej nagłówka
-                        fontSize={0.06}
+                        fontSize={project.kind === 'case' && (project.detailsText || '').length > 90 ? 0.042 : 0.055}
                         color="#333333"
                         font="/fonts/ZCOOLKuaiLe-Regular.woff"
                         anchorX="center"
                         anchorY="top"
-                        maxWidth={1.1} // Maksymalna szerokość zanim zacznie łamać linie
+                        maxWidth={1.18} // Maksymalna szerokość zanim zacznie łamać linie
                         lineHeight={1.4}
-                        textAlign="center"
+                        textAlign={project.kind === 'case' ? 'left' : 'center'}
                         fillOpacity={0} // Start hidden
                     >
-                        {project.direction || ''}
+                        {project.detailsText || ''}
                     </Text>
                 </group>
 
@@ -1208,7 +1277,7 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                 >
                     <Text
                         ref={techTextRef}
-                        position={[0, 0.15, 0.01]}
+                        position={[0, 0.17, 0.01]}
                         fontSize={0.08}
                         color="#1c1c1c"
                         font="/fonts/ZCOOLKuaiLe-Regular.woff"
@@ -1216,33 +1285,25 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                         anchorY="middle"
                         fillOpacity={0} // Start hidden
                     >
-                        我负责的环节
+                        {project.kind === 'case' ? '项目信息' : '所属系列'}
                     </Text>
 
-                    {/* Kontener na loga układane poziomo */}
-                    <group position={[0, -0.05, 0.01]}>
-                        {project.roleLabels && project.roleLabels.map((roleText, idx) => {
-                            // 四个小方格，与原卡片背面的图标位置一致
-                            const spacing = 0.30;
-                            const startX = -((project.roleLabels.length - 1) * spacing) / 2;
-                            const xPos = startX + (idx * spacing);
-                            return (
-                                <Text
-                                    key={idx}
-                                    position={[xPos, 0, 0]}
-                                    fontSize={0.045}
-                                    lineHeight={1.25}
-                                    color="#1c1c1c"
-                                    font="/fonts/ZCOOLKuaiLe-Regular.woff"
-                                    anchorX="center"
-                                    anchorY="middle"
-                                    textAlign="center"
-                                >
-                                    {roleText}
-                                </Text>
-                            );
-                        })}
-                    </group>
+                    {/* 项目信息 / 所属系列（原四个小方格位置） */}
+                    <Text
+                        ref={metaTextRef}
+                        position={[0, 0.08, 0.01]}
+                        fontSize={0.048}
+                        lineHeight={1.45}
+                        maxWidth={1.2}
+                        color="#1c1c1c"
+                        font="/fonts/ZCOOLKuaiLe-Regular.woff"
+                        anchorX="center"
+                        anchorY="top"
+                        textAlign="center"
+                        fillOpacity={0}
+                    >
+                        {project.metaText || ''}
+                    </Text>
                 </group>
 
                 {/* 
@@ -1261,8 +1322,9 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                 <Text
                     ref={textRef}
                     position={[0, 0.7, 0]} // Tylko dwa pierwsze parametry [X, Y] mają tutaj znaczenie
-                    fontSize={0.17}
-                    maxWidth={1.2}
+                    fontSize={(project.title || '').length > 7 ? 0.14 : 0.17}
+                    maxWidth={1.25}
+                    lineHeight={1.15}
                     textAlign="center"
                     color="#1c1c1c"
                     font="/fonts/ZCOOLKuaiLe-Regular.woff"

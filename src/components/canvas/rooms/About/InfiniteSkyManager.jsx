@@ -8,7 +8,7 @@ import { useScene } from '../../../../context/SceneContext';
 import '../../shaders/RevealBasicMaterial'; // Registers brush-stroke reveal for BasicMaterial
 import { isTouchDevice } from '../../../../utils/deviceDetect';
 import { usePortfolioSuspense } from '../../../../hooks/usePortfolioData';
-import { groupBySeason } from '../../../../content/portfolio';
+import { groupBySeason, getGalleryWorks, thumbOf } from '../../../../content/portfolio';
 
 // Reusable Vector3 to avoid allocations in event handlers
 const _tempVec3 = new THREE.Vector3();
@@ -259,7 +259,10 @@ const InfiniteSkyManager = ({ scrollProgressRef }) => {
  * Elements spread apart as they approach camera
  */
 const IntroMilestone = ({ z, scrollProgressRef }) => {
-    const { profile } = usePortfolioSuspense();
+    const { profile, story } = usePortfolioSuspense();
+    // 标语来自 story.headline / story.positioning；为空时沿用原文案
+    const headline = story?.headline?.length ? story.headline.join('') : '“从一件服装出发，';
+    const positioning = story?.positioning || (story?.headline?.length ? '' : '在童趣与清晰的商品表达之间找到平衡”');
     // Load avatar texture
     const avatarTexture = useLoader(THREE.TextureLoader, '/textures/about/awatarnachmurce.webp');
     const { camera, viewport } = useThree();
@@ -386,28 +389,30 @@ const IntroMilestone = ({ z, scrollProgressRef }) => {
             <Text
                 ref={motto1Ref}
                 position={[0, 0, 0.1]}
-                fontSize={0.32}
-                color="#555555"
+                fontSize={0.4}
+                color="#333333"
                 anchorX="center"
                 anchorY="middle"
                 font="/fonts/ZCOOLKuaiLe-Regular.woff"
                 fontStyle="italic"
             >
-                “从一件服装出发，
+                {headline}
             </Text>
 
             {/* Motto - Line 2 (spreads left) */}
             <Text
                 ref={motto2Ref}
                 position={[0, -0.5, 0]}
-                fontSize={0.32}
+                fontSize={0.28}
+                maxWidth={9}
+                textAlign="center"
                 color="#555555"
                 anchorX="center"
                 anchorY="middle"
                 font="/fonts/ZCOOLKuaiLe-Regular.woff"
                 fontStyle="italic"
             >
-                在童趣与清晰的商品表达之间找到平衡”
+                {positioning}
             </Text>
         </group>
     );
@@ -419,11 +424,21 @@ const IntroMilestone = ({ z, scrollProgressRef }) => {
  */
 const buildOverviewData = (portfolio) => {
     const projects = portfolio.projects;
-    const lookItems = projects.map(p => ({
-        label: p.title,
-        date: [p.category, p.seasons.join('、')].filter(Boolean).join(' · '),
-        image: p.cover || '',
-        url: p.cover || null,
+    // “全部作品”：真实案例与作品集页面（有图片），点击放大查看
+    const lookItems = getGalleryWorks(portfolio).map(w => (w.kind === 'case' ? {
+        label: w.title,
+        date: [w.client, w.period].filter(Boolean).join(' · ') || w.direction,
+        image: thumbOf(w.cover),
+        full: w.cover,
+        url: w.cover,
+        natural: true,
+    } : {
+        label: `${w.group} · ${w.pageNo}`,
+        date: w.alt,
+        image: thumbOf(w.src),
+        full: w.src,
+        url: w.src,
+        aspect: w.width && w.height ? w.height / w.width : undefined,
     }));
     const seasonItems = groupBySeason(projects).map(g => ({
         label: `${g.season}季`,
@@ -439,7 +454,7 @@ const buildOverviewData = (portfolio) => {
     });
     const categoryItems = categories.map(c => ({ label: c.name, date: `${c.items.length} 组 · ${c.items.join('、')}`, image: '', url: null }));
     return {
-        other: { id: 'overview-looks', layout: 'certificate_grid', title: '全部作品', items: lookItems, platformConfig: { label: '作品', color: '#1a1a1a' } },
+        other: { id: 'overview-looks', layout: 'certificate_grid', wide: true, lightbox: true, title: '全部作品', items: lookItems, platformConfig: { label: '作品', color: '#1a1a1a' } },
         sotd: { id: 'overview-seasons', layout: 'certificate_grid', title: '四季系列', items: seasonItems, platformConfig: { label: '季节', color: '#1a1a1a' } },
         sotm: { id: 'overview-categories', layout: 'certificate_grid', title: '服装品类', items: categoryItems, platformConfig: { label: '品类', color: '#1a1a1a' } },
     };

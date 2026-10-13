@@ -407,7 +407,14 @@ const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 const x = (i - (n - 1) / 2) * spread;
                 const handleClick = () => {
                     unlockAchievement('contact_choose');
-                    if (channel.id === 'email') {
+                    if (channel.id === 'email' || channel.id === 'phone') {
+                        // 同时显示号码 / 邮箱，桌面端没有拨号或邮件客户端时也能看到
+                        openOverlay({
+                            title: channel.label,
+                            description: channel.id === 'phone' ? `电话：${channel.value}` : `邮箱：${channel.value}`,
+                            url: channel.url,
+                            platformConfig: { label: '联系' },
+                        });
                         window.location.href = channel.url;
                     } else if (channel.id === 'wechat') {
                         try { navigator.clipboard?.writeText(channel.value); } catch (err) { /* ignore */ }
@@ -458,7 +465,7 @@ const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                         outlineWidth={0.01}
                         outlineColor="#ffffff"
                     >
-                        很快会在这里留下邮箱与微信
+                        很快会在这里留下联系方式
                     </Text>
                 </group>
             )}

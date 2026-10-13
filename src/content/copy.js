@@ -20,7 +20,7 @@ export const ROOM_LABELS = {
 };
 
 export const ROOM_SUBTITLES = {
-    gallery: '十二组童装造型作品',
+    gallery: '案例与作品集',
     studio: '从一件衣服到一张主图',
     about: '关于衣着之间',
     contact: '与我联系',

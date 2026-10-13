@@ -4,10 +4,11 @@
  * 旋转塔上的每块屏幕都来自 public/portfolio.json：
  * - 电视（tv）：experience.heroVideo 影像作品
  * - 显示器（monitor）：创作过程四个环节（与作品 roles 对应）
+ * - 显示器（monitor）：experience.collage 中的 7 张创作过程拼贴图（外套、裤装……）
  * - 手机（phone）：按季节分组的造型系列
  */
 import { PROCESS_STEPS } from '../../../../content/copy';
-import { groupBySeason } from '../../../../content/portfolio';
+import { groupBySeason, COLLAGE_LABELS, thumbOf } from '../../../../content/portfolio';
 
 export const PLATFORM_CONFIG = {
     video: {
@@ -67,6 +68,22 @@ export function buildStudioContent(portfolio) {
             summary: step.summary,
             description: step.description,
             meta: count ? `参与 ${count} 组作品` : '',
+        });
+    });
+
+    Object.entries(experience.collage || {}).forEach(([key, src]) => {
+        if (typeof src !== 'string' || !src.trim()) return;
+        const name = COLLAGE_LABELS[key] || key;
+        items.push({
+            id: `collage-${key}`,
+            platform: 'process',
+            device: 'monitor',
+            title: name,
+            summary: '创作过程拼贴',
+            image: src,
+            thumb: thumbOf(src),
+            description: '',
+            meta: '创作过程拼贴',
         });
     });
 

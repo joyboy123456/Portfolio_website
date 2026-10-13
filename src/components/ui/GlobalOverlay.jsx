@@ -90,6 +90,21 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
         }
     }, [isOpen, content]);
 
+    // 灯箱：在作品网格中点击某张图后放大查看（不离开页面）
+    const [zoomIndex, setZoomIndex] = useState(null);
+    useEffect(() => { setZoomIndex(null); }, [content]);
+    const zoomItems = (content.items || []).filter((it) => it.image);
+    useEffect(() => {
+        if (zoomIndex === null) return;
+        const onKey = (e) => {
+            if (e.key === 'Escape') { e.stopPropagation(); setZoomIndex(null); }
+            if (e.key === 'ArrowRight') setZoomIndex((i) => (i + 1) % zoomItems.length);
+            if (e.key === 'ArrowLeft') setZoomIndex((i) => (i - 1 + zoomItems.length) % zoomItems.length);
+        };
+        window.addEventListener('keydown', onKey, true);
+        return () => window.removeEventListener('keydown', onKey, true);
+    }, [zoomIndex, zoomItems.length]);
+
     // Custom scrollbar state
     const scrollContainerRef = useRef(null);
     const trackRef = useRef(null);
@@ -414,7 +429,7 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
                                 className="awards-scroll-container"
                                 style={{
                                     display: 'grid',
-                                    gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(280px, 1fr))',
+                                    gridTemplateColumns: isMobile ? '1fr' : `repeat(auto-fill, minmax(${content.wide ? 400 : 280}px, 1fr))`,
                                     alignContent: 'start',
                                     height: '100%',
                                     overflowY: 'auto',
@@ -438,12 +453,18 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
                                     }}
                                         onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
                                         onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-                                        onClick={() => { const href = item.url || content.url; if (href) window.open(href, '_blank', 'noopener'); }}
+                                        onClick={() => {
+                                            if (item.image && content.lightbox) {
+                                                setZoomIndex(Math.max(0, zoomItems.indexOf(item)));
+                                                return;
+                                            }
+                                            const href = item.url || content.url; if (href) window.open(href, '_blank', 'noopener');
+                                        }}
                                     >
                                         <div style={{
                                             position: 'relative',
                                             width: '100%',
-                                            paddingBottom: '141%', // A4 Portrait ratio
+                                            paddingBottom: item.natural ? 0 : (item.aspect ? `${(item.aspect * 100).toFixed(2)}%` : '141%'), // 默认 A4 竖版；作品图按真实比例
                                             backgroundColor: '#eee',
                                             border: '2px solid #1a1a1a',
                                             overflow: 'hidden',
@@ -455,13 +476,19 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
                                                     alt={item.label}
                                                     loading="lazy"
                                                     decoding="async"
-                                                    style={{
+                                                    style={item.natural ? {
+                                                        display: 'block',
+                                                        width: '100%',
+                                                        height: 'auto',
+                                                        background: '#fff'
+                                                    } : {
                                                         position: 'absolute',
                                                         top: 0,
                                                         left: 0,
                                                         width: '100%',
                                                         height: '100%',
-                                                        objectFit: 'cover'
+                                                        objectFit: item.aspect ? 'contain' : 'cover',
+                                                        background: '#fff'
                                                     }}
                                                 />
                                             ) : (
@@ -483,6 +510,40 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
                                     </div>
                                 ))}
                             </div>
+
+                            {/* 灯箱 */}
+                            {zoomIndex !== null && zoomItems[zoomIndex] && (
+                                <div
+                                    className="work-lightbox"
+                                    onClick={() => setZoomIndex(null)}
+                                    style={{
+                                        position: 'absolute', inset: 0, zIndex: 20, background: 'rgba(250,248,243,0.97)',
+                                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '0.8rem',
+                                        border: '2px solid #1a1a1a', borderRadius: '2px 255px 3px 255px / 255px 5px 225px 3px', padding: '1rem',
+                                    }}
+                                >
+                                    <img
+                                        src={zoomItems[zoomIndex].full || zoomItems[zoomIndex].image}
+                                        alt={zoomItems[zoomIndex].label}
+                                        style={{ maxWidth: '100%', maxHeight: 'calc(100% - 4.5rem)', objectFit: 'contain', border: '2px solid #1a1a1a', background: '#fff' }}
+                                        onClick={(e) => e.stopPropagation()}
+                                    />
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.05rem' }} onClick={(e) => e.stopPropagation()}>
+                                        {zoomItems.length > 1 && (
+                                            <button className="studio-close-btn" aria-label="上一张" style={{ position: 'static', fontSize: '1.8rem', margin: 0 }}
+                                                onClick={() => setZoomIndex((zoomIndex - 1 + zoomItems.length) % zoomItems.length)}>‹</button>
+                                        )}
+                                        <span>{zoomItems[zoomIndex].label}{zoomItems.length > 1 ? `  ·  ${zoomIndex + 1} / ${zoomItems.length}` : ''}</span>
+                                        {zoomItems.length > 1 && (
+                                            <button className="studio-close-btn" aria-label="下一张" style={{ position: 'static', fontSize: '1.8rem', margin: 0 }}
+                                                onClick={() => setZoomIndex((zoomIndex + 1) % zoomItems.length)}>›</button>
+                                        )}
+                                        <button className="studio-close-btn" aria-label="返回网格" style={{ position: 'static' }} onClick={() => setZoomIndex(null)}>
+                                            <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Custom torn-paper scrollbar */}
                             {showScrollbar && (
@@ -534,6 +595,15 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
                                 />
                             )}
 
+                            {/* 图片（创作过程拼贴等） */}
+                            {content.image && !content.video && (
+                                <img
+                                    src={content.image}
+                                    alt={content.title}
+                                    style={{ width: '100%', maxHeight: '50vh', objectFit: 'contain', background: '#fff', border: '2px solid #1a1a1a', borderRadius: '2px 255px 3px 255px / 255px 5px 225px 3px', ...getStaggerStyle(250) }}
+                                />
+                            )}
+
                             {/* Description */}
                             <p 
                                 ref={descriptionRef}
@@ -542,7 +612,7 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
                                 color: '#333',
                                 fontSize: '0.95rem',
                                 margin: 0,
-                                minHeight: '80px', // Prevent layout jump while typing
+                                minHeight: content.description ? '80px' : 0, // Prevent layout jump while typing
                                 ...getStaggerStyle(300)
                             }}>
                                 {content.description}
@@ -556,11 +626,10 @@ const ContentCard = ({ content, isOpen, onClose, isMobile }) => {
                             }}>
                                 <a
                                     href={content.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                    {...(/^(mailto|tel):/.test(content.url) ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
                                     className="studio-action-button"
                                 >
-                                    打开链接 ↗
+                                    {content.url.startsWith('tel:') ? '拨打电话' : content.url.startsWith('mailto:') ? '发送邮件' : '打开链接 ↗'}
                                 </a>
                             </div>}
                         </>

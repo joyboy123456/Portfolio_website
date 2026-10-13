@@ -25,7 +25,7 @@ const ROOM_META = {
     gallery: {
         path: '/gallery',
         title: `作品 — ${BRAND}`,
-        description: '十二组春夏秋冬童装造型作品：外套、衬衫、套装、短袖、裙装、裤装、卫衣与针织。',
+        description: '电商视觉案例，以及女装、童装与往期作品集页面。',
     },
     studio: {
         path: '/studio',

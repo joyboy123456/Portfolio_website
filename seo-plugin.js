@@ -26,10 +26,14 @@ function readPortfolio(root) {
             intro: profile.intro || '',
             email: profile.email || '',
             projects: Array.isArray(raw.projects) ? raw.projects : [],
+            headline: Array.isArray(raw.story?.headline) ? raw.story.headline.join('') : '',
+            positioning: raw.story?.positioning || '',
+            cases: Array.isArray(raw.story?.cases) ? raw.story.cases : [],
+            pages: Array.isArray(raw.story?.archive) ? raw.story.archive : [],
         };
     } catch (error) {
         console.warn('[seo-plugin] 无法读取 public/portfolio.json：', error.message);
-        return { brand: '衣着之间', name: '', title: 'AI 童装电商视觉设计', intro: '', email: '', projects: [] };
+        return { brand: '衣着之间', name: '', title: 'AI 童装电商视觉设计', intro: '', email: '', projects: [], headline: '', positioning: '', cases: [], pages: [] };
     }
 }
 
@@ -37,8 +41,26 @@ function buildSeoHtml(data) {
     const siteTitle = `${data.brand} · ${data.title}作品集`;
     let html = `\n<div id="seo-content" class="sr-only-seo">\n`;
     html += `  <header>\n    <h1>${escapeHtml(siteTitle)}</h1>\n`;
+    if (data.name) html += `    <p>${escapeHtml(data.name)}</p>\n`;
+    if (data.headline) html += `    <p>${escapeHtml(data.headline)}</p>\n`;
+    if (data.positioning) html += `    <p>${escapeHtml(data.positioning)}</p>\n`;
     if (data.intro) html += `    <p>${escapeHtml(data.intro)}</p>\n`;
     html += `  </header>\n`;
+    if (data.cases.length > 0) {
+        html += `  <section id="cases">\n    <h2>案例</h2>\n    <ul>\n`;
+        data.cases.forEach((c) => {
+            const meta = [c.client, c.period].filter(Boolean).join(' · ');
+            html += `      <li>\n        <h3>${escapeHtml(c.projectName || '')}${meta ? `（${escapeHtml(meta)}）` : ''}</h3>\n`;
+            if (c.focus) html += `        <p>${escapeHtml(c.focus)}</p>\n`;
+            html += `      </li>\n`;
+        });
+        html += `    </ul>\n  </section>\n`;
+    }
+    if (data.pages.length > 0) {
+        html += `  <section id="archive">\n    <h2>作品集页面</h2>\n    <ul>\n`;
+        data.pages.forEach((a) => { html += `      <li>${escapeHtml(a.alt || a.label || '')}</li>\n`; });
+        html += `    </ul>\n  </section>\n`;
+    }
     html += `  <nav aria-label="主导航">\n    <ul>\n`;
     html += `      <li><a href="/">首页（走廊）</a></li>\n      <li><a href="/gallery">作品</a></li>\n      <li><a href="/studio">创作</a></li>\n      <li><a href="/about">关于</a></li>\n      <li><a href="/contact">联系</a></li>\n`;
     html += `    </ul>\n  </nav>\n`;
@@ -101,7 +123,14 @@ function buildJsonLd(data) {
 
 function buildLlmsTxt(data) {
     let text = `# ${data.brand}\n> ${data.title}作品集 · ${SITE_URL}\n\n`;
+    if (data.name) text += `作者：${data.name}\n\n`;
+    if (data.positioning) text += `${data.positioning}\n\n`;
     if (data.intro) text += `${data.intro}\n\n`;
+    if (data.cases.length > 0) {
+        text += `## 案例\n`;
+        data.cases.forEach((c) => { text += `- **${c.projectName || ''}**${c.client ? `（${c.client}）` : ''}：${c.focus || ''}\n`; });
+        text += `\n`;
+    }
     text += `## 创作过程\n- 搭配构思\n- AI 模特生成\n- 服装上身\n- 后期精修\n\n`;
     if (data.projects.length > 0) {
         text += `## 作品\n`;
@@ -135,7 +164,7 @@ export function generateSeoHtml() {
         transformIndexHtml(html) {
             const data = readPortfolio(root);
             const siteTitle = `${data.brand} · ${data.title}作品集`;
-            const description = data.intro || `${data.brand}：${data.title}作品集。`;
+            const description = data.positioning || data.intro || `${data.brand}：${data.title}作品集。`;
             const jsonLd = `\n  <script type="application/ld+json">\n${JSON.stringify(buildJsonLd(data), null, 2)}\n  </script>\n`;
             let out = html
                 .replace(/<title>(.*?)<\/title>/, `<title>${escapeHtml(siteTitle)}</title>`)

@@ -1,5 +1,5 @@
 import { useScene } from '../../context/SceneContext';
-import { usePortfolio, getContactChannels } from '../../content/portfolio';
+import { usePortfolio, getContactChannels, getGalleryWorks } from '../../content/portfolio';
 import { ROOM_LABELS, PROCESS_STEPS } from '../../content/copy';
 import '../../styles/ScreenReaderOverlay.scss';
 
@@ -11,7 +11,7 @@ import '../../styles/ScreenReaderOverlay.scss';
  */
 const ROOM_ORDER = ['gallery', 'studio', 'about', 'contact'];
 const ROOM_HINTS = {
-    gallery: '十二组童装造型作品',
+    gallery: '案例与作品集',
     studio: '创作过程与影像作品',
     about: '关于衣着之间',
     contact: '联系方式',
@@ -21,7 +21,8 @@ const ScreenReaderOverlay = () => {
     const { hasEntered, isInRoom, currentRoom, teleportTo, requestExit } = useScene();
     const portfolio = usePortfolio();
     const profile = portfolio?.profile;
-    const projects = portfolio?.projects || [];
+    const works = portfolio ? getGalleryWorks(portfolio) : [];
+    const story = portfolio?.story;
     const contacts = getContactChannels(profile);
 
     return (
@@ -63,19 +64,28 @@ const ScreenReaderOverlay = () => {
                         {currentRoom === 'about' && (
                             <div aria-label="关于">
                                 <h3>关于</h3>
+                                {profile?.name && <p>{profile.name}</p>}
+                                {story?.headline?.length > 0 && <p>{story.headline.join('')}</p>}
+                                {story?.positioning && <p>{story.positioning}</p>}
                                 {profile?.intro && <p>{profile.intro}</p>}
                             </div>
                         )}
                         {currentRoom === 'gallery' && (
                             <div aria-label="作品">
                                 <h3>作品</h3>
-                                <p>作品以纸卡形式挂在晾衣绳上，点击卡片可翻面查看设计方向。</p>
-                                {projects.length > 0 && (
+                                <p>作品以纸卡形式挂在晾衣绳上，点击卡片可翻面查看项目信息，再点击“查看作品图”放大浏览。</p>
+                                {works.length > 0 && (
                                     <ul>
-                                        {projects.map((p) => (
-                                            <li key={p.id}>
-                                                <h4>{p.title}（{p.category}{p.seasons.length ? ` · ${p.seasons.join('、')}` : ''}）</h4>
-                                                <p>{p.direction}</p>
+                                        {works.map((w) => (
+                                            <li key={w.id}>
+                                                {w.kind === 'case' ? (
+                                                    <>
+                                                        <h4>{w.title}{w.client ? `（${w.client}）` : ''}</h4>
+                                                        <p>{[w.focus, w.challenge, w.decision, w.contribution].filter(Boolean).join(' ')}</p>
+                                                    </>
+                                                ) : (
+                                                    <h4>{w.group} · {w.pageNo}：{w.alt}</h4>
+                                                )}
                                             </li>
                                         ))}
                                     </ul>
