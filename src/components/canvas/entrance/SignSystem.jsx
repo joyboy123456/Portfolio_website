@@ -1,6 +1,6 @@
 import { useRef, useMemo } from 'react';
 import { useTexture, Text } from '@react-three/drei';
-import { usePortfolioSuspense } from '../../../hooks/usePortfolioData';
+import { SITE_IDENTITY } from '../../../content/copy';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
@@ -8,7 +8,6 @@ const SignSystem = (props) => {
     const groupRef = useRef();
     const signTexture = useTexture('/textures/entrance/sign.webp');
     const mountTexture = useTexture('/textures/entrance/belka.webp');
-    const { profile } = usePortfolioSuspense();
 
     // Physics parameters
     const timeOffset = useMemo(() => Math.random() * 100, []);
@@ -43,10 +42,10 @@ const SignSystem = (props) => {
                 {/* 3. THE PIVOT FIX */}
                 {/* Translate geometry DOWN so the top edge (where chains are) is at (0,0,0) of the group */}
                 <mesh
-                    position={[0, -0.5, 0]} // Moving down by half height (assuming height ~1)
+                    position={[0, -0.575, 0]} // Moving down by half height
                 >
-                    {/* Width 2.6 (Narrower), Height 1 */}
-                    <planeGeometry args={[2, 1]} />
+                    {/* 招牌加宽到 2.5 × 1.15，放得下「史雪 · AI 童装电商素材设计」和一句话说明 */}
+                    <planeGeometry args={[2.5, 1.15]} />
                     <meshBasicMaterial color="#e0e0e0"
                         map={signTexture}
                         transparent={true}
@@ -54,28 +53,30 @@ const SignSystem = (props) => {
                         depthWrite={false} // Fix for seeing objects behind transparent parts
                     />
                 </mesh>
-                {/* 招牌文字：品牌名（原贴图上的英文已抹去） */}
+                {/* 招牌文字：「史雪 · AI 童装电商素材设计」+ 一句话说明（原贴图上的英文已抹去） */}
                 <Text
                     position={[0, -0.6, 0.02]}
-                    fontSize={0.3}
-                    letterSpacing={0.15}
+                    fontSize={0.14}
+                    letterSpacing={0.02}
                     color="#1a1a1a"
                     anchorX="center"
                     anchorY="middle"
                     font="/fonts/ZCOOLKuaiLe-Regular.woff"
                 >
-                    {profile.brand}
+                    {SITE_IDENTITY.title}
                 </Text>
                 <Text
-                    position={[0, -0.86, 0.02]}
-                    fontSize={0.085}
-                    letterSpacing={0.2}
+                    position={[0, -0.89, 0.02]}
+                    fontSize={0.082}
+                    maxWidth={2.1}
+                    lineHeight={1.3}
+                    textAlign="center"
                     color="#555555"
                     anchorX="center"
                     anchorY="middle"
                     font="/fonts/ZCOOLKuaiLe-Regular.woff"
                 >
-                    童装视觉作品集
+                    {'一件衣服进来，\n一整套可上架的主图、模特图、系列图出去'}
                 </Text>
             </group>
         </group>

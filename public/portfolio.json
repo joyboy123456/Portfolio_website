@@ -1,274 +1,599 @@
 {
-  "profile": {
-    "name": "",
-    "brand": "衣着之间",
-    "title": "AI 童装电商视觉设计",
-    "intro": "专注童装搭配与 AI 电商视觉。从一件服装出发，选择内搭、下装、配饰与模特风格，在自然的童趣和清晰的商品表达之间找到平衡。关注版型、颜色与细节还原，也关注每一张主图的完整度。",
-    "email": "",
-    "wechat": "",
-    "resumeUrl": ""
-  },
-  "projects": [
-    {
-      "id": "look-01",
-      "title": "拼色轻外套",
-      "subtitle": "Little layers, bright days.",
-      "seasons": [
-        "春",
-        "秋"
-      ],
-      "category": "外套",
-      "direction": "以一件女童外套为起点，围绕配色、内搭和裤装建立清爽的完整造型。",
-      "roles": [
-        "搭配构思",
-        "AI 模特生成",
-        "服装上身",
-        "后期精修"
-      ],
-      "cover": "",
-      "sourceImage": "",
-      "stylingImage": "",
-      "gallery": []
+    "profile": {
+        "name": "史雪",
+        "brand": "衣着之间",
+        "title": "AI 童装电商素材设计",
+        "intro": "史雪，专注用 AI 生成童装电商素材。从一件服装的平铺图或白底图出发，完成搭配构思、AI 模特生成、服装上身还原与后期精修，交付电商主图、AI 模特上身图和系列造型图。关注版型、颜色与细节还原，让商品的特点在每一张图里被清楚看见。",
+        "phone": "192 6927 7230",
+        "email": "17shixue@gmail.com",
+        "wechat": "",
+        "resumeUrl": ""
     },
-    {
-      "id": "look-02",
-      "title": "衬衫轻搭",
-      "subtitle": "An everyday kind of lovely.",
-      "seasons": [
-        "春"
-      ],
-      "category": "衬衫",
-      "direction": "通过衬衫与裙装、裤装的组合，探索同一件单品的不同日常风格。",
-      "roles": [
-        "搭配构思",
-        "AI 模特生成",
-        "服装上身",
-        "后期精修"
-      ],
-      "cover": "",
-      "sourceImage": "",
-      "stylingImage": "",
-      "gallery": []
+    "projects": [
+        {
+            "id": "look-01",
+            "title": "拼色轻外套",
+            "subtitle": "Little layers, bright days.",
+            "seasons": [
+                "春",
+                "秋"
+            ],
+            "category": "外套",
+            "direction": "以一件女童外套为起点，围绕配色、内搭和裤装建立清爽的完整造型。",
+            "roles": [
+                "搭配构思",
+                "AI 模特生成",
+                "服装上身",
+                "后期精修"
+            ],
+            "cover": "",
+            "sourceImage": "",
+            "stylingImage": "",
+            "gallery": []
+        },
+        {
+            "id": "look-02",
+            "title": "衬衫轻搭",
+            "subtitle": "An everyday kind of lovely.",
+            "seasons": [
+                "春"
+            ],
+            "category": "衬衫",
+            "direction": "通过衬衫与裙装、裤装的组合，探索同一件单品的不同日常风格。",
+            "roles": [
+                "搭配构思",
+                "AI 模特生成",
+                "服装上身",
+                "后期精修"
+            ],
+            "cover": "",
+            "sourceImage": "",
+            "stylingImage": "",
+            "gallery": []
+        },
+        {
+            "id": "look-03",
+            "title": "自在运动套装",
+            "subtitle": "Made for little adventures.",
+            "seasons": [
+                "春"
+            ],
+            "category": "套装",
+            "direction": "关注运动套装的整体比例与活动感，用自然姿态展示服装的舒适与细节。",
+            "roles": [
+                "搭配构思",
+                "AI 模特生成",
+                "服装上身",
+                "后期精修"
+            ],
+            "cover": "",
+            "sourceImage": "",
+            "stylingImage": "",
+            "gallery": []
+        },
+        {
+            "id": "look-04",
+            "title": "趣味短袖",
+            "subtitle": "Small details, big personality.",
+            "seasons": [
+                "夏"
+            ],
+            "category": "短袖",
+            "direction": "以短袖的图案与颜色为线索，搭配下装和小配饰，保留轻松自然的童趣。",
+            "roles": [
+                "搭配构思",
+                "AI 模特生成",
+                "服装上身",
+                "后期精修"
+            ],
+            "cover": "",
+            "sourceImage": "",
+            "stylingImage": "",
+            "gallery": []
+        },
+        {
+            "id": "look-05",
+            "title": "假日连衣裙",
+            "subtitle": "A little moment in the sun.",
+            "seasons": [
+                "夏"
+            ],
+            "category": "裙装",
+            "direction": "围绕连衣裙的层次、面料与颜色，构思轻盈的夏日穿搭和假日场景。",
+            "roles": [
+                "搭配构思",
+                "AI 模特生成",
+                "服装上身",
+                "后期精修"
+            ],
+            "cover": "",
+            "sourceImage": "",
+            "stylingImage": "",
+            "gallery": []
+        },
+        {
+            "id": "look-06",
+            "title": "轻松牛仔裤",
+            "subtitle": "Room to play.",
+            "seasons": [
+                "夏"
+            ],
+            "category": "裤装",
+            "direction": "以裤装的版型与长度为重点，研究上装搭配及鞋袜比例，清晰呈现单品。",
+            "roles": [
+                "搭配构思",
+                "AI 模特生成",
+                "服装上身",
+                "后期精修"
+            ],
+            "cover": "",
+            "sourceImage": "",
+            "stylingImage": "",
+            "gallery": []
+        },
+        {
+            "id": "look-07",
+            "title": "小小叠穿卫衣",
+            "subtitle": "Layers of everyday joy.",
+            "seasons": [
+                "秋"
+            ],
+            "category": "卫衣",
+            "direction": "通过卫衣、内搭与下装的层次关系，让秋日童装造型保持活泼与协调。",
+            "roles": [
+                "搭配构思",
+                "AI 模特生成",
+                "服装上身",
+                "后期精修"
+            ],
+            "cover": "",
+            "sourceImage": "",
+            "stylingImage": "",
+            "gallery": []
+        },
+        {
+            "id": "look-08",
+            "title": "撞色秋外套",
+            "subtitle": "A playful pop of color.",
+            "seasons": [
+                "秋"
+            ],
+            "category": "外套",
+            "direction": "从撞色外套的色块比例出发，调整内搭、帽子与裤装，突出服装本身。",
+            "roles": [
+                "搭配构思",
+                "AI 模特生成",
+                "服装上身",
+                "后期精修"
+            ],
+            "cover": "",
+            "sourceImage": "",
+            "stylingImage": "",
+            "gallery": []
+        },
+        {
+            "id": "look-09",
+            "title": "秋日运动套装",
+            "subtitle": "Ready for an ordinary adventure.",
+            "seasons": [
+                "秋"
+            ],
+            "category": "套装",
+            "direction": "以同款不同颜色和不同搭配为方向，探索统一风格下的主图与套图表达。",
+            "roles": [
+                "搭配构思",
+                "AI 模特生成",
+                "服装上身",
+                "后期精修"
+            ],
+            "cover": "",
+            "sourceImage": "",
+            "stylingImage": "",
+            "gallery": []
+        },
+        {
+            "id": "look-10",
+            "title": "温暖棉外套",
+            "subtitle": "Wrapped in a little warmth.",
+            "seasons": [
+                "冬"
+            ],
+            "category": "外套",
+            "direction": "在保暖层次与童装比例之间寻找平衡，强调冬季外套的版型和蓬松质感。",
+            "roles": [
+                "搭配构思",
+                "AI 模特生成",
+                "服装上身",
+                "后期精修"
+            ],
+            "cover": "",
+            "sourceImage": "",
+            "stylingImage": "",
+            "gallery": []
+        },
+        {
+            "id": "look-11",
+            "title": "软糯针织",
+            "subtitle": "Softness in every little detail.",
+            "seasons": [
+                "冬"
+            ],
+            "category": "针织",
+            "direction": "围绕针织的纹理与触感构思冬季搭配，用柔和光线呈现领口、袖口等细节。",
+            "roles": [
+                "搭配构思",
+                "AI 模特生成",
+                "服装上身",
+                "后期精修"
+            ],
+            "cover": "",
+            "sourceImage": "",
+            "stylingImage": "",
+            "gallery": []
+        },
+        {
+            "id": "look-12",
+            "title": "冬日休闲裤",
+            "subtitle": "Comfort with a little character.",
+            "seasons": [
+                "冬"
+            ],
+            "category": "裤装",
+            "direction": "突出裤装的面料、裤脚与版型，通过鞋袜与上装搭配构思完整冬日造型。",
+            "roles": [
+                "搭配构思",
+                "AI 模特生成",
+                "服装上身",
+                "后期精修"
+            ],
+            "cover": "",
+            "sourceImage": "",
+            "stylingImage": "",
+            "gallery": []
+        }
+    ],
+    "experience": {
+        "heroVideo": "https://heinimumu.oss-cn-hangzhou.aliyuncs.com/portfolio/site-media/works/hero-adventure-scroll-9657b4884ed4.mp4",
+        "heroPoster": "/works/oss/hero-adventure-scroll-poster.webp",
+        "heroLabel": "AI 影像",
+        "collage": {
+            "jacket": "/works/oss/jacket.webp",
+            "trousers": "/works/oss/trousers.webp",
+            "top": "/works/oss/top.webp",
+            "hat": "/works/oss/hat.webp",
+            "dress": "/works/oss/dress.webp",
+            "set": "/works/oss/set.webp",
+            "accessory": "/works/oss/accessory.webp"
+        },
+        "seasons": {
+            "春": "",
+            "夏": "",
+            "秋": "",
+            "冬": ""
+        }
     },
-    {
-      "id": "look-03",
-      "title": "自在运动套装",
-      "subtitle": "Made for little adventures.",
-      "seasons": [
-        "春"
-      ],
-      "category": "套装",
-      "direction": "关注运动套装的整体比例与活动感，用自然姿态展示服装的舒适与细节。",
-      "roles": [
-        "搭配构思",
-        "AI 模特生成",
-        "服装上身",
-        "后期精修"
-      ],
-      "cover": "",
-      "sourceImage": "",
-      "stylingImage": "",
-      "gallery": []
-    },
-    {
-      "id": "look-04",
-      "title": "趣味短袖",
-      "subtitle": "Small details, big personality.",
-      "seasons": [
-        "夏"
-      ],
-      "category": "短袖",
-      "direction": "以短袖的图案与颜色为线索，搭配下装和小配饰，保留轻松自然的童趣。",
-      "roles": [
-        "搭配构思",
-        "AI 模特生成",
-        "服装上身",
-        "后期精修"
-      ],
-      "cover": "",
-      "sourceImage": "",
-      "stylingImage": "",
-      "gallery": []
-    },
-    {
-      "id": "look-05",
-      "title": "假日连衣裙",
-      "subtitle": "A little moment in the sun.",
-      "seasons": [
-        "夏"
-      ],
-      "category": "裙装",
-      "direction": "围绕连衣裙的层次、面料与颜色，构思轻盈的夏日穿搭和假日场景。",
-      "roles": [
-        "搭配构思",
-        "AI 模特生成",
-        "服装上身",
-        "后期精修"
-      ],
-      "cover": "",
-      "sourceImage": "",
-      "stylingImage": "",
-      "gallery": []
-    },
-    {
-      "id": "look-06",
-      "title": "轻松牛仔裤",
-      "subtitle": "Room to play.",
-      "seasons": [
-        "夏"
-      ],
-      "category": "裤装",
-      "direction": "以裤装的版型与长度为重点，研究上装搭配及鞋袜比例，清晰呈现单品。",
-      "roles": [
-        "搭配构思",
-        "AI 模特生成",
-        "服装上身",
-        "后期精修"
-      ],
-      "cover": "",
-      "sourceImage": "",
-      "stylingImage": "",
-      "gallery": []
-    },
-    {
-      "id": "look-07",
-      "title": "小小叠穿卫衣",
-      "subtitle": "Layers of everyday joy.",
-      "seasons": [
-        "秋"
-      ],
-      "category": "卫衣",
-      "direction": "通过卫衣、内搭与下装的层次关系，让秋日童装造型保持活泼与协调。",
-      "roles": [
-        "搭配构思",
-        "AI 模特生成",
-        "服装上身",
-        "后期精修"
-      ],
-      "cover": "",
-      "sourceImage": "",
-      "stylingImage": "",
-      "gallery": []
-    },
-    {
-      "id": "look-08",
-      "title": "撞色秋外套",
-      "subtitle": "A playful pop of color.",
-      "seasons": [
-        "秋"
-      ],
-      "category": "外套",
-      "direction": "从撞色外套的色块比例出发，调整内搭、帽子与裤装，突出服装本身。",
-      "roles": [
-        "搭配构思",
-        "AI 模特生成",
-        "服装上身",
-        "后期精修"
-      ],
-      "cover": "",
-      "sourceImage": "",
-      "stylingImage": "",
-      "gallery": []
-    },
-    {
-      "id": "look-09",
-      "title": "秋日运动套装",
-      "subtitle": "Ready for an ordinary adventure.",
-      "seasons": [
-        "秋"
-      ],
-      "category": "套装",
-      "direction": "以同款不同颜色和不同搭配为方向，探索统一风格下的主图与套图表达。",
-      "roles": [
-        "搭配构思",
-        "AI 模特生成",
-        "服装上身",
-        "后期精修"
-      ],
-      "cover": "",
-      "sourceImage": "",
-      "stylingImage": "",
-      "gallery": []
-    },
-    {
-      "id": "look-10",
-      "title": "温暖棉外套",
-      "subtitle": "Wrapped in a little warmth.",
-      "seasons": [
-        "冬"
-      ],
-      "category": "外套",
-      "direction": "在保暖层次与童装比例之间寻找平衡，强调冬季外套的版型和蓬松质感。",
-      "roles": [
-        "搭配构思",
-        "AI 模特生成",
-        "服装上身",
-        "后期精修"
-      ],
-      "cover": "",
-      "sourceImage": "",
-      "stylingImage": "",
-      "gallery": []
-    },
-    {
-      "id": "look-11",
-      "title": "软糯针织",
-      "subtitle": "Softness in every little detail.",
-      "seasons": [
-        "冬"
-      ],
-      "category": "针织",
-      "direction": "围绕针织的纹理与触感构思冬季搭配，用柔和光线呈现领口、袖口等细节。",
-      "roles": [
-        "搭配构思",
-        "AI 模特生成",
-        "服装上身",
-        "后期精修"
-      ],
-      "cover": "",
-      "sourceImage": "",
-      "stylingImage": "",
-      "gallery": []
-    },
-    {
-      "id": "look-12",
-      "title": "冬日休闲裤",
-      "subtitle": "Comfort with a little character.",
-      "seasons": [
-        "冬"
-      ],
-      "category": "裤装",
-      "direction": "突出裤装的面料、裤脚与版型，通过鞋袜与上装搭配构思完整冬日造型。",
-      "roles": [
-        "搭配构思",
-        "AI 模特生成",
-        "服装上身",
-        "后期精修"
-      ],
-      "cover": "",
-      "sourceImage": "",
-      "stylingImage": "",
-      "gallery": []
+    "story": {
+        "headline": [
+            "把商品的特点，",
+            "变成看得见的",
+            "吸引力。"
+        ],
+        "positioning": "用 AI 把一件童装变成一整套可上架的电商素材：主图、AI 模特上身图、系列造型图。",
+        "cases": [
+            {
+                "projectName": "上线页面与销售反馈",
+                "client": "",
+                "period": "",
+                "role": "",
+                "challenge": "",
+                "audience": "",
+                "decision": "",
+                "contribution": "",
+                "deliverables": "",
+                "outcome": "",
+                "reflection": "",
+                "id": "case-01",
+                "direction": "主图与销售表现",
+                "focus": "从选图、搭配到商品页面呈现，画面进入真实售卖场景，并留下可见的已售记录。",
+                "preview": "/works/oss/jacket.webp",
+                "cover": "",
+                "comparisonBefore": "",
+                "comparisonAfter": "",
+                "gallery": [],
+                "evidence": {
+                    "image": "/works/oss/taobao-sales-proof-seven-products.webp",
+                    "caption": "淘宝商品页面与已售记录汇总",
+                    "metric": "",
+                    "period": "",
+                    "sourceUrl": ""
+                }
+            },
+            {
+                "projectName": "一套穿搭，四种小心情",
+                "client": "神奇童年",
+                "period": "2026.09",
+                "role": "图片制作、AI 搭配",
+                "challenge": "",
+                "audience": "",
+                "decision": "",
+                "contribution": "",
+                "deliverables": "系列造型展示图",
+                "outcome": "",
+                "reflection": "",
+                "id": "case-02",
+                "direction": "系列视觉与风格统一",
+                "focus": "以同一位模特呈现内搭、条纹叠穿与加绒马甲的造型变化。",
+                "preview": "/works/oss/set.webp",
+                "cover": "/works/oss/shenqi-tongnian-four-looks.webp",
+                "comparisonBefore": "",
+                "comparisonAfter": "",
+                "gallery": [],
+                "evidence": {
+                    "image": "",
+                    "caption": "",
+                    "metric": "",
+                    "period": "",
+                    "sourceUrl": ""
+                }
+            },
+            {
+                "projectName": "基础内搭的多维呈现",
+                "client": "神奇童年",
+                "period": "2026.09",
+                "role": "图片制作、AI 搭配",
+                "challenge": "同一组基础内搭需要同时说明整体穿搭与衣身细节，单一视角难以兼顾搭配比例和领口、肩袖、袖口的呈现。",
+                "audience": "",
+                "decision": "以同一位模特和统一白底组织两组画面：全身造型对照色彩、下装与动作姿态；近景画面集中呈现领口、肩线与袖型。",
+                "contribution": "负责图片制作与 AI 搭配，将已选素材整理为全身和近景两张横版展示图，统一排版与图文层级。",
+                "deliverables": "全身造型展示图、近景细节展示图",
+                "outcome": "",
+                "reflection": "",
+                "id": "case-03",
+                "direction": "基础内搭的多维呈现",
+                "focus": "从全身搭配到上身近景，呈现基础内搭的色彩、版型和穿着姿态。",
+                "preview": "/works/oss/trousers.webp",
+                "cover": "/works/oss/base-layer-full-look-originals.webp",
+                "secondaryCover": "/works/oss/base-layer-close-view-originals.webp",
+                "comparisonBefore": "",
+                "comparisonAfter": "",
+                "gallery": [],
+                "evidence": {
+                    "image": "",
+                    "caption": "",
+                    "metric": "",
+                    "period": "",
+                    "sourceUrl": ""
+                }
+            }
+        ],
+        "bioExtra": "",
+        "archive": [
+            {
+                "src": "/works/oss/womens-01.webp",
+                "width": "800",
+                "height": "566",
+                "alt": "史雪个人视觉作品集封面",
+                "label": "Womenswear / 2026 / 01 / 23",
+                "srcset": "/works/oss/thumb/womens-01.webp 768w, /works/oss/womens-01.webp 800w"
+            },
+            {
+                "src": "/works/oss/womens-02.webp",
+                "srcset": "/works/oss/thumb/womens-02.webp 768w, /works/oss/womens-02.webp 1600w",
+                "width": "1600",
+                "height": "900",
+                "alt": "女装作品集第 2 页，个人介绍与设计经历",
+                "label": "Womenswear / 2026 / 02 / 23"
+            },
+            {
+                "src": "/works/oss/womens-03.webp",
+                "srcset": "/works/oss/thumb/womens-03.webp 768w, /works/oss/womens-03.webp 1600w",
+                "width": "1600",
+                "height": "900",
+                "alt": "女装视觉作品第 3 页",
+                "label": "Womenswear / 2026 / 03 / 23"
+            },
+            {
+                "src": "/works/oss/womens-04.webp",
+                "srcset": "/works/oss/thumb/womens-04.webp 768w, /works/oss/womens-04.webp 1600w",
+                "width": "1600",
+                "height": "900",
+                "alt": "女装视觉作品第 4 页",
+                "label": "Womenswear / 2026 / 04 / 23"
+            },
+            {
+                "src": "/works/oss/womens-05.webp",
+                "srcset": "/works/oss/thumb/womens-05.webp 768w, /works/oss/womens-05.webp 1600w",
+                "width": "1600",
+                "height": "900",
+                "alt": "女装视觉作品第 5 页",
+                "label": "Womenswear / 2026 / 05 / 23"
+            },
+            {
+                "src": "/works/oss/womens-06.webp",
+                "srcset": "/works/oss/thumb/womens-06.webp 768w, /works/oss/womens-06.webp 1600w",
+                "width": "1600",
+                "height": "900",
+                "alt": "女装视觉作品第 6 页",
+                "label": "Womenswear / 2026 / 06 / 23"
+            },
+            {
+                "src": "/works/oss/womens-07.webp",
+                "srcset": "/works/oss/thumb/womens-07.webp 768w, /works/oss/womens-07.webp 1600w",
+                "width": "1600",
+                "height": "900",
+                "alt": "女装视觉作品第 7 页",
+                "label": "Womenswear / 2026 / 07 / 23"
+            },
+            {
+                "src": "/works/oss/womens-08.webp",
+                "srcset": "/works/oss/thumb/womens-08.webp 768w, /works/oss/womens-08.webp 1600w",
+                "width": "1600",
+                "height": "900",
+                "alt": "女装视觉作品第 8 页",
+                "label": "Womenswear / 2026 / 08 / 23"
+            },
+            {
+                "src": "/works/oss/womens-09.webp",
+                "srcset": "/works/oss/thumb/womens-09.webp 768w, /works/oss/womens-09.webp 1600w",
+                "width": "1600",
+                "height": "900",
+                "alt": "女装视觉作品第 9 页",
+                "label": "Womenswear / 2026 / 09 / 23"
+            },
+            {
+                "src": "/works/oss/womens-10.webp",
+                "srcset": "/works/oss/thumb/womens-10.webp 768w, /works/oss/womens-10.webp 1600w",
+                "width": "1600",
+                "height": "900",
+                "alt": "女装视觉作品第 10 页",
+                "label": "Womenswear / 2026 / 10 / 23"
+            },
+            {
+                "src": "/works/oss/kids-01.webp",
+                "srcset": "/works/oss/thumb/kids-01.webp 768w, /works/oss/kids-01.webp 1600w",
+                "width": "1600",
+                "height": "900",
+                "alt": "童装视觉作品第 1 页",
+                "label": "Childrenswear / 2026 / 11 / 23"
+            },
+            {
+                "src": "/works/oss/kids-02.webp",
+                "srcset": "/works/oss/thumb/kids-02.webp 768w, /works/oss/kids-02.webp 1600w",
+                "width": "1600",
+                "height": "900",
+                "alt": "童装视觉作品第 2 页",
+                "label": "Childrenswear / 2026 / 12 / 23"
+            },
+            {
+                "src": "/works/oss/kids-03.webp",
+                "srcset": "/works/oss/thumb/kids-03.webp 768w, /works/oss/kids-03.webp 1600w",
+                "width": "1600",
+                "height": "900",
+                "alt": "童装视觉作品第 3 页",
+                "label": "Childrenswear / 2026 / 13 / 23"
+            },
+            {
+                "src": "/works/oss/kids-04.webp",
+                "srcset": "/works/oss/thumb/kids-04.webp 768w, /works/oss/kids-04.webp 1600w",
+                "width": "1600",
+                "height": "900",
+                "alt": "童装视觉作品第 4 页",
+                "label": "Childrenswear / 2026 / 14 / 23"
+            },
+            {
+                "src": "/works/oss/kids-05.webp",
+                "srcset": "/works/oss/thumb/kids-05.webp 768w, /works/oss/kids-05.webp 1600w",
+                "width": "1600",
+                "height": "900",
+                "alt": "童装视觉作品第 5 页",
+                "label": "Childrenswear / 2026 / 15 / 23"
+            },
+            {
+                "src": "/works/oss/kids-06.webp",
+                "srcset": "/works/oss/thumb/kids-06.webp 768w, /works/oss/kids-06.webp 1600w",
+                "width": "1600",
+                "height": "900",
+                "alt": "童装视觉作品第 6 页",
+                "label": "Childrenswear / 2026 / 16 / 23"
+            },
+            {
+                "src": "/works/oss/kids-07.webp",
+                "srcset": "/works/oss/thumb/kids-07.webp 768w, /works/oss/kids-07.webp 1600w",
+                "width": "1600",
+                "height": "900",
+                "alt": "童装视觉作品第 7 页",
+                "label": "Childrenswear / 2026 / 17 / 23"
+            },
+            {
+                "src": "/works/oss/archive-04.webp",
+                "srcset": "/works/oss/thumb/archive-04.webp 768w, /works/oss/archive-04.webp 1600w",
+                "width": "1600",
+                "height": "1131",
+                "alt": "2025 年旧作品集第 4 页",
+                "label": "Archive / 2025 / 18 / 23"
+            },
+            {
+                "src": "/works/oss/archive-05.webp",
+                "srcset": "/works/oss/thumb/archive-05.webp 768w, /works/oss/archive-05.webp 1600w",
+                "width": "1600",
+                "height": "1131",
+                "alt": "2025 年旧作品集第 5 页",
+                "label": "Archive / 2025 / 19 / 23"
+            },
+            {
+                "src": "/works/oss/archive-06.webp",
+                "srcset": "/works/oss/thumb/archive-06.webp 768w, /works/oss/archive-06.webp 1600w",
+                "width": "1600",
+                "height": "1131",
+                "alt": "2025 年旧作品集第 6 页",
+                "label": "Archive / 2025 / 20 / 23"
+            },
+            {
+                "src": "/works/oss/archive-07.webp",
+                "srcset": "/works/oss/thumb/archive-07.webp 768w, /works/oss/archive-07.webp 1600w",
+                "width": "1600",
+                "height": "1131",
+                "alt": "2025 年旧作品集第 7 页",
+                "label": "Archive / 2025 / 21 / 23"
+            },
+            {
+                "src": "/works/oss/archive-08.webp",
+                "srcset": "/works/oss/thumb/archive-08.webp 768w, /works/oss/archive-08.webp 1600w",
+                "width": "1600",
+                "height": "1131",
+                "alt": "2025 年旧作品集第 8 页",
+                "label": "Archive / 2025 / 22 / 23"
+            },
+            {
+                "src": "/works/oss/archive-09-real-toys.webp",
+                "width": "1600",
+                "height": "1131",
+                "alt": "2025 年旧作品集第 9 页",
+                "label": "Archive / 2025 / 23 / 23",
+                "srcset": "/works/oss/thumb/archive-09-real-toys.webp 768w, /works/oss/archive-09-real-toys.webp 1600w"
+            }
+        ],
+        "films": [
+            {
+                "id": "film-01",
+                "title": "男装复古叠穿",
+                "description": "在同一室内场景中，通过转身与步行动作呈现多套复古男装搭配。",
+                "src": "https://heinimumu.oss-cn-hangzhou.aliyuncs.com/portfolio/clothing-films/case-1-c5e68182ea9d.mp4",
+                "poster": "/works/oss/case-1-poster.webp",
+                "garment": "/works/oss/case-1-garment.webp",
+                "durationLabel": "00:13",
+                "duration": 13.056009
+            },
+            {
+                "id": "film-02",
+                "title": "女装混搭切换",
+                "description": "以沙发场景串联夹克、衬衫与西装造型，展示不同穿搭与人物姿态。",
+                "src": "https://heinimumu.oss-cn-hangzhou.aliyuncs.com/portfolio/clothing-films/case-2-523e46517761.mp4",
+                "poster": "/works/oss/case-2-poster.webp",
+                "garment": "/works/oss/case-2-garment.webp",
+                "durationLabel": "00:15",
+                "duration": 15.071995
+            },
+            {
+                "id": "film-03",
+                "title": "夏日多造型换装",
+                "description": "从宽松套装到夏日穿搭，在同一空间内呈现服装、配饰与整体比例的变化。",
+                "src": "https://heinimumu.oss-cn-hangzhou.aliyuncs.com/portfolio/clothing-films/case-3-33704c40e12c.mp4",
+                "poster": "/works/oss/case-3-poster.webp",
+                "garment": "/works/oss/case-3-garment.webp",
+                "durationLabel": "00:15",
+                "duration": 15.071995
+            },
+            {
+                "id": "film-04",
+                "title": "春夏日常穿搭",
+                "description": "用连续 Look 切换展示上装、裙裤与配饰的组合，保留成片中的造型编号。",
+                "src": "https://heinimumu.oss-cn-hangzhou.aliyuncs.com/portfolio/clothing-films/case-4-1d8b2da97384.mp4",
+                "poster": "/works/oss/case-4-poster.webp",
+                "garment": "/works/oss/case-4-garment.webp",
+                "durationLabel": "00:15",
+                "duration": 15.0
+            }
+        ]
     }
-  ],
-  "experience": {
-    "heroVideo": "/works/hero-adventure-scroll.mp4",
-    "heroPoster": "/works/hero-adventure-scroll-poster.jpg",
-    "heroLabel": "AI 影像生成展示",
-    "collage": {
-      "jacket": "",
-      "trousers": "",
-      "top": "",
-      "hat": "",
-      "dress": "",
-      "set": "",
-      "accessory": ""
-    },
-    "seasons": {
-      "春": "",
-      "夏": "",
-      "秋": "",
-      "冬": ""
-    }
-  }
 }

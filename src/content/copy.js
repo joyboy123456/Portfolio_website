@@ -11,63 +11,100 @@ export const FONT_CN_FAMILY = 'ZCOOL KuaiLe';
 
 export const SITE_URL = 'https://oai.locker';
 
-// 走廊里四扇门的显示名称（内部 id 不变）
+// 网站定位（入口招牌、走廊标题、SEO 共用）
+export const SITE_IDENTITY = {
+    title: '史雪 · AI 童装电商素材设计',
+    subtitle: '一件衣服进来，一整套可上架的主图、模特图、系列图出去',
+    // 走廊大标题：上行逐字拆分，下行为副标题
+    heroMain: '一件衣服',
+    heroSub: ['→', '一套会卖货的画面'],
+};
+
+// 走廊里四扇门的显示名称（内部 id 不变；顺序：案例 → 流程 → 关于 → 合作）
 export const ROOM_LABELS = {
-    gallery: '作品',
-    studio: '创作',
+    gallery: '案例',
+    studio: '流程',
     about: '关于',
-    contact: '联系',
+    contact: '合作',
 };
 
 export const ROOM_SUBTITLES = {
-    gallery: '十二组童装造型作品',
-    studio: '从一件衣服到一张主图',
-    about: '关于衣着之间',
-    contact: '与我联系',
+    gallery: '真实上架的电商素材',
+    studio: '从商品图到主图的生产线',
+    about: '我是谁、用什么、交付什么',
+    contact: '需要一组上新素材？',
 };
 
-// 创作过程（Studio 房间）：与 portfolio.json 中 roles 的四个环节一一对应
+// 能对外说明的交付物（只写真实做过的）
+export const DELIVERABLES = ['电商主图', 'AI 模特上身图', '系列造型图'];
+// 常用工具（与入口门上的贴纸一致）
+export const TOOLS = ['Photoshop', '即梦', 'Lovart', 'ComfyUI', 'OpenAI', 'Gemini', 'Vibe Coding'];
+// 内容平台（与“流程”门上的贴纸一致）
+export const PLATFORMS = ['淘宝', '小红书', '抖音'];
+
+// 素材生产线（Studio 房间）：输入 → 四个制作环节 → 交付
+// 中间四步与 portfolio.json 中 roles 的四个环节一一对应（role 字段用于统计）
 export const PROCESS_STEPS = [
+    {
+        id: 'input',
+        role: '输入',
+        title: '输入商品图',
+        index: '01',
+        summary: '平铺图 / 白底图',
+        description: '生产线的起点：一件衣服的平铺图或白底商品图。先看清款式、颜色、图案和面料，作为后面每一步的还原依据。',
+    },
     {
         id: 'styling',
         role: '搭配构思',
-        index: '01',
-        summary: '从一件服装出发',
-        description: '从一件服装出发，选择内搭、下装、配饰与整体配色，先在纸面上把完整造型想清楚。',
+        title: '搭配构思',
+        index: '02',
+        summary: '内搭、下装、配饰',
+        description: '从这件服装出发，选择内搭、下装、配饰与整体配色，先把完整造型想清楚。',
     },
     {
         id: 'model',
         role: 'AI 模特生成',
-        index: '02',
-        summary: '确定模特风格',
+        title: 'AI 模特生成',
+        index: '03',
+        summary: '年龄感、姿态、场景',
         description: '根据造型方向确定模特年龄感、姿态与场景氛围，用 AI 生成自然、有童趣的模特形象。',
     },
     {
         id: 'try-on',
         role: '服装上身',
-        index: '03',
+        title: '服装上身还原',
+        index: '04',
         summary: '版型与颜色还原',
         description: '把服装穿到模特身上，重点检查版型、长度、颜色与图案细节，尽量还原商品本身。',
     },
     {
         id: 'retouch',
         role: '后期精修',
-        index: '04',
-        summary: '完成每一张主图',
-        description: '修整光影、褶皱与边缘细节，统一整组画面的色调，让每一张主图都完整、清晰。',
+        title: '后期精修',
+        index: '05',
+        summary: '光影、褶皱、色调',
+        description: '修整光影、褶皱与边缘细节，统一整组画面的色调，让每一张图都完整、清晰。',
+    },
+    {
+        id: 'deliver',
+        role: '交付',
+        title: '交付',
+        index: '06',
+        summary: '主图 / 上身图 / 系列图',
+        description: '交付一整套可上架的电商素材：电商主图、AI 模特上身图、系列造型图。',
     },
 ];
 
-// 入口处小鸭子的随机台词
+// 入口处小鸭子的随机台词（电商素材生产线版）
 export const DUCK_QUOTES = [
-    '今天想穿哪件小外套？',
-    '配色先从一件单品开始。',
-    '裤长刚好，跑跳不绊脚！',
-    '帽子是造型的小句号。',
-    '细节还原，才是好主图。',
-    '春夏秋冬，都有小冒险。',
-    '内搭露出一点点就好。',
-    '颜色要和商品图一致哦。',
+    '白底图进来，模特图出去。',
+    '颜色要和实物一致哦。',
+    '主图第一眼就要看清卖点。',
+    '一个模特，一整组系列图。',
+    '平铺图也能穿上身！',
+    '袖口领口，细节别跑偏。',
+    '今天上新几件？',
+    '四季上新，一条生产线。',
 ];
 
 // 新手提示 / 成就

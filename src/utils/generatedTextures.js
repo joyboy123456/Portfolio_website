@@ -242,6 +242,143 @@ export function loadLookCardTextures(projects, withPainted) {
 }
 
 // ---------------------------------------------------------------------------
+// 真实作品卡片（案例 / 作品集页面）
+// 画布为 512 x 1024（模板 1024 x 2048 的一半），直接作为 CanvasTexture 使用，
+// 避免 26 张卡片 × 2 次 webp 编码拖慢加载。图片使用 public/works/oss/thumb/ 小图。
+// ---------------------------------------------------------------------------
+const WORK_SCALE = 0.5;
+
+function drawContain(ctx, img, x, y, w, h) {
+    const scale = Math.min(w / img.width, h / img.height);
+    const dw = img.width * scale;
+    const dh = img.height * scale;
+    const dx = x + (w - dw) / 2;
+    ctx.drawImage(img, dx, y, dw, dh);
+    return { x: dx, y, w: dw, h: dh };
+}
+
+function sketchFrame(ctx, x, y, w, h, rand) {
+    ctx.strokeStyle = INK;
+    ctx.lineWidth = 4;
+    sketchPath(ctx, [[x, y], [x + w, y], [x + w, y + h], [x, y + h]], rand, true, 2);
+}
+
+async function renderWorkCard(work, painted, thumbOf) {
+    const template = await loadImage(painted ? '/textures/gallery/card_front_painted.webp' : '/textures/gallery/card_front.webp');
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024 * WORK_SCALE;
+    canvas.height = 2048 * WORK_SCALE;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(WORK_SCALE, WORK_SCALE);
+    if (template) ctx.drawImage(template, 0, 0, 1024, 2048);
+    else { ctx.fillStyle = '#fbf8f1'; ctx.fillRect(0, 0, 1024, 2048); }
+
+    const rand = rng(work.id + (painted ? 'p' : 's'));
+    const { x, y, w, h } = CARD_INNER;
+    const pad = 36;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    hatch(ctx, x + 10, y + 10, w - 20, h - 20, rand, 34, painted ? 0.05 : 0.06);
+
+    // 图片：案例最多叠放两张（主视觉 + 细节），作品集页面一张
+    const srcs = work.kind === 'case'
+        ? work.images.slice(0, 2).map((im) => im.src)
+        : [work.src];
+    const imgs = (await Promise.all(srcs.map((s) => loadImage(thumbOf(s))))).filter(Boolean);
+    const cx = x + w / 2;
+    const boxW = w - pad * 2;
+    const maxImgH = imgs.length > 1 ? (h * 0.6) / 2 : h * 0.6;
+    const sizes = imgs.map((img) => {
+        const sc = Math.min(boxW / img.width, maxImgH / img.height);
+        return { img, w: img.width * sc, h: img.height * sc };
+    });
+
+    // 文字（全部来自 portfolio.json）：[字号, 颜色, 文本, 行高]
+    const lines = [];
+    ctx.textBaseline = 'top';
+    if (work.kind === 'case') {
+        lines.push([76, INK, `案例 ${work.number}`, 100]);
+        const meta = [work.client, work.period].filter(Boolean).join(' · ');
+        if (work.evidence?.image) lines.push([54, INK, '真实上架证据', 78]);
+        if (meta) lines.push([50, SOFT_INK, meta, 74]);
+        ctx.font = font(52);
+        wrapText(ctx, work.direction || work.focus, w - pad * 3).slice(0, 3).forEach((ln) => lines.push([52, INK, ln, 70]));
+    } else {
+        lines.push([96, INK, work.group, 122]);
+        const meta = ['往期作品集', work.year, work.pageTotal ? `${work.pageNo} / ${work.pageTotal}` : work.pageNo].filter(Boolean).join(' · ');
+        if (meta) lines.push([48, SOFT_INK, meta, 72]);
+        ctx.font = font(54);
+        wrapText(ctx, work.alt, w - pad * 3).slice(0, 3).forEach((ln) => lines.push([54, INK, ln, 72]));
+    }
+
+    // 整体垂直居中
+    const gapImg = 40;
+    const imgsH = sizes.reduce((acc, sz) => acc + sz.h, 0) + Math.max(0, sizes.length - 1) * gapImg;
+    const textH = lines.reduce((acc, l) => acc + l[3], 0);
+    const total = imgsH + (sizes.length ? 56 : 0) + textH;
+    let cursor = y + Math.max(pad, (h - total) / 2);
+    sizes.forEach((sz) => {
+        const dx = cx - sz.w / 2;
+        ctx.drawImage(sz.img, dx, cursor, sz.w, sz.h);
+        sketchFrame(ctx, dx - 6, cursor - 6, sz.w + 12, sz.h + 12, rand);
+        cursor += sz.h + gapImg;
+    });
+    if (sizes.length) cursor += 56 - gapImg;
+    ctx.textAlign = 'center';
+    lines.forEach(([size, color, text, lh]) => {
+        ctx.font = font(size);
+        ctx.fillStyle = color;
+        ctx.fillText(text, cx, cursor);
+        cursor += lh;
+    });
+    ctx.textAlign = 'left';
+    return canvas;
+}
+
+// 卡片背面：去掉原模板下方的四个小方格，改为放文字信息
+async function renderWorkBack(painted) {
+    const template = await loadImage(painted ? '/textures/gallery/tylkartki_painted.webp' : '/textures/gallery/tylkartki.webp');
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024 * WORK_SCALE;
+    canvas.height = 2048 * WORK_SCALE;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(WORK_SCALE, WORK_SCALE);
+    if (template) {
+        ctx.drawImage(template, 0, 0, 1024, 2048);
+        // 用上方大方框内的干净纸面覆盖四个小方格
+        ctx.drawImage(template, 140, 300, 760, 290, 100, 1236, 826, 296);
+    } else {
+        ctx.fillStyle = '#fbf8f1';
+        ctx.fillRect(0, 0, 1024, 2048);
+    }
+    return canvas;
+}
+
+const workCardCache = new Map();
+/**
+ * 返回 Promise<{ cards: { [id]: { front, painted } }, back, backPainted }>，值均为 canvas。
+ * thumbOf 用于把作品图换成小尺寸贴图。
+ */
+export function loadWorkCardTextures(works, withPainted, thumbOf = (s) => s) {
+    const key = works.map((w) => `${w.id}:${w.cover || w.src}`).join('|') + (withPainted ? ':p' : '');
+    if (!workCardCache.has(key)) {
+        workCardCache.set(key, (async () => {
+            await ensureCanvasFont();
+            const cards = {};
+            await Promise.all(works.map(async (work) => {
+                const front = await renderWorkCard(work, false, thumbOf);
+                const painted = withPainted ? await renderWorkCard(work, true, thumbOf) : front;
+                cards[work.id] = { front, painted };
+            }));
+            const back = await renderWorkBack(false);
+            const backPainted = withPainted ? await renderWorkBack(true) : back;
+            return { cards, back, backPainted };
+        })());
+    }
+    return workCardCache.get(key);
+}
+
+// ---------------------------------------------------------------------------
 // 创作塔屏幕（电视 / 显示器 / 手机）
 // ---------------------------------------------------------------------------
 const SCREENS = {
@@ -295,6 +432,26 @@ async function renderScreen(item, painted) {
         ctx.fillStyle = INK;
         ctx.font = font(58);
         ctx.fillText(item.title, x + w / 2, y + h - 85);
+    } else if (item.device === 'monitor' && item.image) {
+        // 创作过程拼贴图：图片 + 底部标签
+        const img = await loadImage(item.thumb || item.image);
+        if (img) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(x + 8, y + 8, w - 16, h - 16);
+            ctx.clip();
+            drawCover(ctx, img, x + 8, y + 8, w - 16, h - 16);
+            ctx.restore();
+        }
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        const tagW = Math.min(w - 80, 120 + item.title.length * 62);
+        ctx.fillRect(x + 30, y + h - 104, tagW, 76);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = INK;
+        ctx.strokeRect(x + 30, y + h - 104, tagW, 76);
+        ctx.fillStyle = INK;
+        ctx.font = font(52);
+        ctx.fillText(item.title, x + 30 + tagW / 2, y + h - 64);
     } else if (item.device === 'monitor') {
         hatch(ctx, x, y, w, h, rand, 34, 0.05);
         ctx.font = font(150);
@@ -329,7 +486,7 @@ async function renderScreen(item, painted) {
 
 const screenCache = new Map();
 export function loadStudioScreens(items, withPainted) {
-    const key = items.map((i) => i.id + (i.poster || '')).join('|') + (withPainted ? ':p' : '');
+    const key = items.map((i) => i.id + (i.poster || '') + (i.image || '')).join('|') + (withPainted ? ':p' : '');
     if (!screenCache.has(key)) {
         screenCache.set(key, (async () => {
             await ensureCanvasFont();

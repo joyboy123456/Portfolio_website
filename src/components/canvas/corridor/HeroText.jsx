@@ -1,8 +1,8 @@
-import { useRef, useMemo, useState, useEffect } from 'react';
+import { useRef, useMemo, useState, useEffect, forwardRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import * as THREE from 'three';
-import { usePortfolioSuspense } from '../../../hooks/usePortfolioData';
+import { SITE_IDENTITY } from '../../../content/copy';
 
 // Local fonts for sketch-style typography (TTF format required by troika)
 const RUBIK_SCRIBBLE_URL = '/fonts/ZCOOLKuaiLe-Regular.woff';
@@ -15,8 +15,8 @@ let hasPlayedDrawAnimation = false;
  * HeroText Component - Hand-drawn Style with Sketch Fonts
  * 
  * WOW Effects for Awwwards SOTD:
- * - 品牌名逐字拆分（站酷快乐体）
- * - 副标题词组同样会拆分
+ * - 大标题「一件衣服」逐字拆分（站酷快乐体）
+ * - 副标题「→ 一套会卖货的画面」同样会拆分
  * - Floating micro-animations
  * - Parallax split effect
  * - RESPONSIVE: scales down on mobile
@@ -55,26 +55,24 @@ const HeroText = ({ position = [0, 0.3, 0] }) => {
     // Pre-allocate Vector3 to avoid per-frame garbage collection
     const worldPosVec = useRef(new THREE.Vector3());
 
-    // 品牌名逐字拆分（来自 portfolio.json → profile.brand）
-    const { profile } = usePortfolioSuspense();
+    // 走廊大标题：「一件衣服 → 一套会卖货的画面」（文案见 content/copy.js → SITE_IDENTITY）
     const letters = useMemo(() => {
-        const chars = Array.from(profile.brand || '衣着之间').filter(c => c.trim());
+        const chars = Array.from(SITE_IDENTITY.heroMain).filter(c => c.trim());
         const n = chars.length;
         const spacing = n > 4 ? 0.62 : 0.78;
         return chars.map((char, i) => {
             const t = n > 1 ? (i / (n - 1)) * 2 - 1 : 0; // -1..1
             return { char, key: `${char}-${i}`, baseX: (i - (n - 1) / 2) * spacing, splitDir: t * 1.7, delay: 0 };
         });
-    }, [profile.brand]);
+    }, []);
 
-    // 副标题（来自 profile.title），按空格拆成可分离的词组
+    // 副标题：箭头 + 结果，两段可分离
     const taglineWords = useMemo(() => {
-        const title = profile.title || 'AI 童装电商视觉设计';
-        const parts = title === 'AI 童装电商视觉设计' ? ['AI 童装', '·', '电商视觉设计'] : title.split(/\s+/).filter(Boolean);
+        const parts = SITE_IDENTITY.heroSub;
         const n = parts.length;
-        const offsets = n === 3 ? [-0.62, 0, 0.66] : parts.map((_, i) => (i - (n - 1) / 2) * 0.8);
+        const offsets = n === 2 ? [-1.0, 0.26] : parts.map((_, i) => (i - (n - 1) / 2) * 0.8);
         return parts.map((text, i) => ({ text, key: `${text}-${i}`, baseX: offsets[i], splitDir: n > 1 ? ((i / (n - 1)) * 2 - 1) * 1.0 : 0, delay: 0 }));
-    }, [profile.title]);
+    }, []);
 
     // Animation loop
     useFrame((state, delta) => {
@@ -157,12 +155,19 @@ const HeroText = ({ position = [0, 0.3, 0] }) => {
             ))}
 
             {/* Tagline words - Cabin Sketch font with fade-in animation */}
-            {taglineWords.map((word, i) => (
+            {taglineWords.map((word, i) => (word.text === '→' ? (
+                // 站酷快乐体没有 → 字形，用手绘箭头代替
+                <SketchArrow
+                    key={word.key}
+                    ref={(el) => (taglineRefs.current[i] = el)}
+                    position={[word.baseX, -0.55, 0.3]}
+                />
+            ) : (
                 <Text
                     key={word.key}
                     ref={(el) => (taglineRefs.current[i] = el)}
                     position={[word.baseX, -0.55, 0.3]}
-                    fontSize={0.16}
+                    fontSize={0.2}
                     font={CABIN_SKETCH_URL}
                     color="#555555"
                     anchorX="center"
@@ -171,7 +176,7 @@ const HeroText = ({ position = [0, 0.3, 0] }) => {
                 >
                     {word.text}
                 </Text>
-            ))}
+            )))}
 
             {/* Small decorative doodles around title */}
             <SmallStar position={[-1.2, 0.55, 0]} scale={0.07} />
@@ -181,6 +186,25 @@ const HeroText = ({ position = [0, 0.3, 0] }) => {
         </group>
     );
 };
+
+/** 手绘风格箭头（→），与副标题同色 */
+const SketchArrow = forwardRef(({ position }, ref) => (
+    <group ref={ref} position={position}>
+        <mesh>
+            <planeGeometry args={[0.34, 0.028]} />
+            <meshBasicMaterial color="#555555" />
+        </mesh>
+        <mesh position={[0.13, 0.042, 0]} rotation={[0, 0, -Math.PI / 4.2]}>
+            <planeGeometry args={[0.13, 0.028]} />
+            <meshBasicMaterial color="#555555" />
+        </mesh>
+        <mesh position={[0.13, -0.042, 0]} rotation={[0, 0, Math.PI / 4.2]}>
+            <planeGeometry args={[0.13, 0.028]} />
+            <meshBasicMaterial color="#555555" />
+        </mesh>
+    </group>
+));
+SketchArrow.displayName = 'SketchArrow';
 
 // Easing function
 const easeOutQuad = (t) => t * (2 - t);

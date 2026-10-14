@@ -12,10 +12,36 @@ import { useEffect, useState } from 'react';
  */
 
 const EMPTY = {
-    profile: { name: '', brand: '衣着之间', title: 'AI 童装电商视觉设计', intro: '', email: '', wechat: '', resumeUrl: '' },
+    profile: { name: '', brand: '衣着之间', title: 'AI 童装电商素材设计', intro: '', phone: '', email: '', wechat: '', resumeUrl: '' },
     projects: [],
     experience: { heroVideo: '', heroPoster: '', heroLabel: '', collage: {}, seasons: {} },
+    story: { headline: [], positioning: '', cases: [], archive: [], films: [] },
 };
+
+// 作品集页面分组（来自 archive[].label 的第一段）
+const ARCHIVE_GROUPS = {
+    womenswear: '女装',
+    childrenswear: '童装',
+    archive: '往期',
+};
+
+// 创作过程拼贴图（experience.collage）的中文名称
+export const COLLAGE_LABELS = {
+    jacket: '外套',
+    trousers: '裤装',
+    top: '上衣',
+    hat: '帽子',
+    dress: '裙装',
+    set: '套装',
+    accessory: '配饰',
+};
+
+/** 本地作品图对应的小尺寸贴图（public/works/oss/thumb/），用于 3D 卡片与屏幕 */
+export function thumbOf(src) {
+    return typeof src === 'string' && src.startsWith('/works/oss/') && !src.includes('/thumb/')
+        ? src.replace('/works/oss/', '/works/oss/thumb/')
+        : src;
+}
 
 let cache = null;
 let promise = null;
@@ -31,6 +57,7 @@ export function normalizePortfolio(raw) {
         brand: str(p.brand) || EMPTY.profile.brand,
         title: str(p.title) || EMPTY.profile.title,
         intro: str(p.intro),
+        phone: str(p.phone),
         email: str(p.email),
         wechat: str(p.wechat),
         resumeUrl: str(p.resumeUrl),
@@ -66,7 +93,80 @@ export function normalizePortfolio(raw) {
         seasons: e.seasons || {},
     };
 
-    return { profile, projects, experience };
+    const st = data.story || {};
+    const cases = arr(st.cases).map((c, index) => {
+        const it = c || {};
+        const ev = it.evidence || {};
+        const evidence = { image: str(ev.image), caption: str(ev.caption) };
+        const cover = str(it.cover) || evidence.image || str(it.preview);
+        const images = [];
+        const push = (src, label) => { if (src && !images.some((x) => x.src === src)) images.push({ src, label }); };
+        push(str(it.cover), '主视觉');
+        push(str(it.secondaryCover), '细节');
+        push(evidence.image, evidence.caption || '上线记录');
+        arr(it.gallery).map(str).filter(Boolean).forEach((g, k) => push(g, `图 ${k + 1}`));
+        return {
+            kind: 'case',
+            id: str(it.id) || `case-${String(index + 1).padStart(2, '0')}`,
+            number: String(index + 1).padStart(2, '0'),
+            title: str(it.projectName) || `案例 ${index + 1}`,
+            client: str(it.client),
+            period: str(it.period),
+            role: str(it.role),
+            deliverables: str(it.deliverables),
+            direction: str(it.direction),
+            focus: str(it.focus),
+            challenge: str(it.challenge),
+            decision: str(it.decision),
+            contribution: str(it.contribution),
+            outcome: str(it.outcome),
+            evidence,
+            cover,
+            images,
+        };
+    });
+
+    const archive = arr(st.archive).map((a, index) => {
+        const it = a || {};
+        const label = str(it.label);
+        const parts = label.split('/').map((x) => x.trim());
+        const groupKey = (parts[0] || '').toLowerCase();
+        return {
+            kind: 'page',
+            id: `page-${String(index + 1).padStart(2, '0')}`,
+            src: str(it.src),
+            alt: str(it.alt),
+            label,
+            group: ARCHIVE_GROUPS[groupKey] || parts[0] || '作品',
+            groupEn: parts[0] || '',
+            year: parts[1] || '',
+            pageNo: parts[2] || String(index + 1).padStart(2, '0'),
+            pageTotal: parts[3] || '',
+            width: Number(it.width) || 0,
+            height: Number(it.height) || 0,
+        };
+    }).filter((a) => a.src);
+
+    const story = {
+        headline: arr(st.headline).map(str).filter(Boolean),
+        positioning: str(st.positioning),
+        cases,
+        archive,
+        films: arr(st.films),
+    };
+
+    return { profile, projects, experience, story };
+}
+
+/**
+ * 作品墙（Gallery）展示顺序：先 3 个案例，再按 女装 / 童装 / 往期 排列的作品集页面。
+ * 只包含有真实图片的作品；没有图片的 12 组造型不会出现在这里。
+ */
+export function getGalleryWorks(portfolio) {
+    const story = portfolio?.story || EMPTY.story;
+    const cases = (story.cases || []).filter((c) => c.cover);
+    const pages = story.archive || [];
+    return [...cases, ...pages];
 }
 
 export function loadPortfolio() {
@@ -106,6 +206,7 @@ export function groupBySeason(projects) {
 /** 联系方式：只返回真实填写的项，空值不会生成任何入口 */
 export function getContactChannels(profile) {
     const list = [];
+    if (profile?.phone) list.push({ id: 'phone', label: '电话', value: profile.phone, url: `tel:${profile.phone.replace(/[^\d+]/g, '')}` });
     if (profile?.email) list.push({ id: 'email', label: '邮箱', value: profile.email, url: `mailto:${profile.email}` });
     if (profile?.wechat) list.push({ id: 'wechat', label: '微信', value: profile.wechat, url: null });
     if (profile?.resumeUrl) list.push({ id: 'resume', label: '简历', value: '查看简历', url: profile.resumeUrl });
