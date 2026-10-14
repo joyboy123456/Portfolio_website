@@ -6,7 +6,7 @@
 
 | 文件 | 用途 | 时长 | 来源 / 许可 | 状态 |
 |---|---|---|---|---|
-| cfl_turningpages-belem-breeze-487596.ogg | 背景音乐 | 2:58 | Pixabay 音乐 #487596 "Belém Breeze"，作者 Turning_Pages，Pixabay Content License（免费商用、无需署名）https://pixabay.com/music/search/belem%20breeze/ | ✅ 已确认 |
+| bgm-ruoruchujian.mp3 | 背景音乐 | 2:41 | 《若如初见（纯享版）》· 秋成。由站长提供（音轨取自其自有页面 henan.0905.de5.net 的视频），个人作品集非商业使用；版权归原作者所有 | ⚠️ 站长自行负责 |
 | papersound.mp3 | 作品墙翻页 | 3.7 s | 文件元数据: "Turning page of book" — Tomas Herudek（Uppbeat 上同名音效 https://uppbeat.io/sfx/turning-page-of-book-2/1577/13022 ，需按 Uppbeat 条款授权）| ⚠️ 许可未确认 |
 | baloonpoop.mp3 | 关于页气球爆破 | 1.0 s | 未知 | ⚠️ 许可未确认 |
 | otwarciedrzwi.mp3 | 开门 | 2.0 s | 未知 | ⚠️ 许可未确认 |
