@@ -46,14 +46,22 @@ const EMPTY_WORK = {
 // 卡片正面标题
 const workTitle = (w) => (w.kind === 'case' ? w.title : `${w.group} · ${w.pageNo}`);
 
-// 卡片背面：上方“说明”区
+// 案例是否带真实上架证据（淘宝页面 / 已售记录）
+const isLiveProof = (w) => w.kind === 'case' && !!w.evidence?.image;
+
+// 卡片背面：上方「需求 → 交付 → 结果」（只使用 portfolio.json 中非空的字段）
 const workDetails = (w) => {
     if (w.kind === 'case') {
+        const need = w.challenge || w.direction;
+        const deliver = w.deliverables || w.contribution || w.focus;
+        const result = w.outcome || (w.evidence?.caption ? `${isLiveProof(w) ? '真实上架证据：' : ''}${w.evidence.caption}` : '');
+        // 需求 / 交付 没用到 focus 时，把它作为开头一句
+        const lead = w.focus && deliver !== w.focus ? w.focus : '';
         return [
-            w.focus,
-            w.challenge && `挑战：${w.challenge}`,
-            w.decision && `决策：${w.decision}`,
-            w.contribution && `我的工作：${w.contribution}`,
+            lead,
+            need && `需求｜${need}`,
+            deliver && `交付｜${deliver}`,
+            result && `结果｜${result}`,
         ].filter(Boolean).join('\n');
     }
     return w.alt || '';
@@ -63,16 +71,15 @@ const workDetails = (w) => {
 const workMeta = (w) => {
     if (w.kind === 'case') {
         const lines = [
+            isLiveProof(w) && '真实上架证据',
             w.client && `客户：${w.client}`,
             w.period && `时间：${w.period}`,
             w.role && `角色：${w.role}`,
-            w.deliverables && `交付：${w.deliverables}`,
         ].filter(Boolean);
-        if (lines.length === 0 && w.direction) lines.push(`方向：${w.direction}`);
-        if (w.evidence?.caption && lines.length < 4) lines.push(w.evidence.caption);
         return lines.join('\n');
     }
     return [
+        '往期作品集',
         w.groupEn ? `${w.group}（${w.groupEn}）` : w.group,
         [w.year, w.pageTotal ? `第 ${w.pageNo} / ${w.pageTotal} 页` : ''].filter(Boolean).join(' · '),
     ].filter(Boolean).join('\n');
@@ -86,7 +93,7 @@ const buildWorkOverlay = (w, works) => {
             wide: true,
             lightbox: true,
             title: w.title,
-            platformConfig: { label: `案例 ${w.number}${w.client ? ` · ${w.client}` : ''}` },
+            platformConfig: { label: `案例 ${w.number}${isLiveProof(w) ? ' · 真实上架证据' : ''}${w.client ? ` · ${w.client}` : ''}` },
             items: w.images.map((im) => ({ label: im.label, date: '', image: thumbOf(im.src), full: im.src, url: im.src, natural: true })),
         };
     }
@@ -98,7 +105,7 @@ const buildWorkOverlay = (w, works) => {
         layout: 'certificate_grid',
         wide: true,
         lightbox: true,
-        title: `${w.group}作品集`,
+        title: `往期作品集 · ${w.group}`,
         platformConfig: { label: [w.groupEn, w.year, `${group.length} 页`].filter(Boolean).join(' · ') },
         items: ordered.map((x) => ({
             label: `${x.group} · ${x.pageNo}`,
@@ -253,6 +260,16 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
         return list.length > 0 ? list : [EMPTY_WORK];
     }, [portfolio]);
     const PROJECT_COUNT = Math.max(MIN_CARD_COUNT, works.length);
+    const galleryIntro = useMemo(() => {
+        const caseCount = works.filter((w) => w.kind === 'case').length;
+        const line1 = caseCount
+            ? `晾衣绳上是真实做过的童装电商素材：先看 ${caseCount} 个案例，再翻往期作品集`
+            : '晾衣绳上是真实做过的童装电商素材与往期作品集';
+        const line2 = isLiveProof(works[0])
+            ? '第 1 张是淘宝上架与已售记录 · 点卡片翻面看「需求 · 交付 · 结果」'
+            : '点卡片翻面看「需求 · 交付 · 结果」';
+        return `${line1}\n${line2}`;
+    }, [works]);
     const cardCanvases = use(loadWorkCardTextures(works, canHover, thumbOf));
 
     useEffect(() => {
@@ -555,6 +572,23 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                         />
                     ))}
                 </group>
+
+                {/* === 作品墙说明（告诉访客这里挂的是什么） === */}
+                <Text
+                    position={[0, 2.5, -4.1]}
+                    fontSize={canHover ? 0.13 : 0.1}
+                    maxWidth={canHover ? 6.4 : 3.6}
+                    lineHeight={1.45}
+                    textAlign="center"
+                    color="#2a2a2a"
+                    anchorX="center"
+                    anchorY="middle"
+                    font="/fonts/ZCOOLKuaiLe-Regular.woff"
+                    outlineWidth={0.004}
+                    outlineColor="#ffffff"
+                >
+                    {galleryIntro}
+                </Text>
 
                 {/* === SCENERY LAYERS === */}
                 {/* Houses - center */}
@@ -1249,7 +1283,7 @@ const ProjectCard = memo(forwardRef(({ index, project, total, clothespinTexture,
                         anchorY="middle"
                         fillOpacity={0} // Start hidden
                     >
-                        {project.kind === 'case' ? '项目说明' : '作品页'}
+                        {project.kind === 'case' ? '需求 · 交付 · 结果' : '作品页'}
                     </Text>
 
                     <Text

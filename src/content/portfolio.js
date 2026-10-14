@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react';
  */
 
 const EMPTY = {
-    profile: { name: '', brand: '衣着之间', title: 'AI 童装电商视觉设计', intro: '', phone: '', email: '', wechat: '', resumeUrl: '' },
+    profile: { name: '', brand: '衣着之间', title: 'AI 童装电商素材设计', intro: '', phone: '', email: '', wechat: '', resumeUrl: '' },
     projects: [],
     experience: { heroVideo: '', heroPoster: '', heroLabel: '', collage: {}, seasons: {} },
     story: { headline: [], positioning: '', cases: [], archive: [], films: [] },

@@ -22,6 +22,7 @@ const _tempVec3 = new THREE.Vector3();
  */
 
 import { useAudio } from '../../../../context/AudioManager';
+import { DELIVERABLES } from '../../../../content/copy';
 
 export const BALLOON_AUDIO_SETTINGS = {
     volume: 1.0,
@@ -275,6 +276,7 @@ const IntroMilestone = ({ z, scrollProgressRef }) => {
     const avatarRef = useRef();
     const motto1Ref = useRef();
     const motto2Ref = useRef();
+    const introRef = useRef();
 
     // Base positions
     const baseY = 2;
@@ -342,6 +344,9 @@ const IntroMilestone = ({ z, scrollProgressRef }) => {
         }
         if (motto2Ref.current) {
             motto2Ref.current.position.x = -spreadFactor * maxSpread * 0.5;
+        }
+        if (introRef.current) {
+            introRef.current.position.x = spreadFactor * maxSpread * 0.6;
         }
     });
 
@@ -414,6 +419,24 @@ const IntroMilestone = ({ z, scrollProgressRef }) => {
             >
                 {positioning}
             </Text>
+
+            {/* 我是谁：profile.intro（spreads with line 2） */}
+            {profile.intro && (
+                <Text
+                    ref={introRef}
+                    position={[0, -1.45, 0]}
+                    fontSize={0.2}
+                    maxWidth={8.5}
+                    lineHeight={1.5}
+                    textAlign="center"
+                    color="#666666"
+                    anchorX="center"
+                    anchorY="middle"
+                    font="/fonts/ZCOOLKuaiLe-Regular.woff"
+                >
+                    {profile.intro}
+                </Text>
+            )}
         </group>
     );
 };
@@ -893,7 +916,7 @@ const JourneyMilestone = ({ z, scrollProgressRef }) => {
                 anchorY="middle"
                 font="/fonts/ZCOOLKuaiLe-Regular.woff"
             >
-                我关注的
+                交付什么
             </Text>
 
             {/* Subtitle */}
@@ -905,7 +928,7 @@ const JourneyMilestone = ({ z, scrollProgressRef }) => {
                 anchorY="middle"
                 font="/fonts/ZCOOLKuaiLe-Regular.woff"
             >
-                每一张主图的完整度
+                {DELIVERABLES.join(' · ')}
             </Text>
 
             {/* === UO ISLAND (Left) === */}
@@ -930,7 +953,7 @@ const JourneyMilestone = ({ z, scrollProgressRef }) => {
                     letterSpacing={0.05}
                     font="/fonts/ZCOOLKuaiLe-Regular.woff"
                 >
-                    版型
+                    主图
                 </Text>
                 {/* 木牌文字 */}
                 <Text
@@ -941,7 +964,7 @@ const JourneyMilestone = ({ z, scrollProgressRef }) => {
                     anchorY="middle"
                     font="/fonts/ZCOOLKuaiLe-Regular.woff"
                 >
-                    比例 · 长度
+                    看清卖点
                 </Text>
             </group>
 
@@ -967,7 +990,7 @@ const JourneyMilestone = ({ z, scrollProgressRef }) => {
                     letterSpacing={0.08}
                     font="/fonts/ZCOOLKuaiLe-Regular.woff"
                 >
-                    颜色与细节
+                    上身图
                 </Text>
                 {/* 木牌文字 */}
                 <Text
@@ -978,7 +1001,7 @@ const JourneyMilestone = ({ z, scrollProgressRef }) => {
                     anchorY="middle"
                     font="/fonts/ZCOOLKuaiLe-Regular.woff"
                 >
-                    还原商品本身
+                    还原版型颜色
                 </Text>
             </group>
         </group>
@@ -994,20 +1017,20 @@ const JourneyMilestone = ({ z, scrollProgressRef }) => {
 // === EDYTUJ WYSOKOŚĆ TUTAJ (zmień wartość 'y' dla każdego balona) ===
 const BALLOON_CONFIG = [
     // Large balloons (main skills) - front and center
-    { texture: '/textures/about/reactduzybalon.webp', paintedTexture: '/textures/about/reactduzybalon_painted.webp', label: '搭配', size: 'large', x: -2.5, y: 2, z: 0.3, phase: 0 },
-    { texture: '/textures/about/threejsduzybalon.webp', paintedTexture: '/textures/about/threejsduzybalon_painted.webp', label: '配色', size: 'large', x: 2.5, y: 2.5, z: 0.2, phase: 1.5 },
-    { texture: '/textures/about/GSAPduzybalon.webp', paintedTexture: '/textures/about/GSAPduzybalon_painted.webp', label: '童趣', size: 'large', x: 0, y: 3, z: 0.5, phase: 3 },
+    { texture: '/textures/about/reactduzybalon.webp', paintedTexture: '/textures/about/reactduzybalon_painted.webp', label: 'Photoshop', size: 'large', x: -2.5, y: 2, z: 0.3, phase: 0 },
+    { texture: '/textures/about/threejsduzybalon.webp', paintedTexture: '/textures/about/threejsduzybalon_painted.webp', label: 'Vibe Coding', size: 'large', x: 2.5, y: 2.5, z: 0.2, phase: 1.5 },
+    { texture: '/textures/about/GSAPduzybalon.webp', paintedTexture: '/textures/about/GSAPduzybalon_painted.webp', label: '即梦', size: 'large', x: 0, y: 3, z: 0.5, phase: 3 },
 
     // Medium balloons - scattered around
-    { texture: '/textures/about/JSSREDNIBALON.webp', paintedTexture: '/textures/about/JSSREDNIBALON_painted.webp', label: '版型', size: 'medium', x: -4, y: 1, z: -0.3, phase: 0.8 },
-    { texture: '/textures/about/csssrednibalon.webp', paintedTexture: '/textures/about/csssrednibalon_painted.webp', label: '细节', size: 'medium', x: 4, y: 1.5, z: -0.2, phase: 2.2 },
-    { texture: '/textures/about/nextjssrednibalon.webp', paintedTexture: '/textures/about/nextjssrednibalon_painted.webp', label: '质感', size: 'medium', x: 0, y: 0.5, z: -0.4, phase: 4 },
+    { texture: '/textures/about/JSSREDNIBALON.webp', paintedTexture: '/textures/about/JSSREDNIBALON_painted.webp', label: 'Lovart', size: 'medium', x: -4, y: 1, z: -0.3, phase: 0.8 },
+    { texture: '/textures/about/csssrednibalon.webp', paintedTexture: '/textures/about/csssrednibalon_painted.webp', label: 'OpenAI', size: 'medium', x: 4, y: 1.5, z: -0.2, phase: 2.2 },
+    { texture: '/textures/about/nextjssrednibalon.webp', paintedTexture: '/textures/about/nextjssrednibalon_painted.webp', label: 'Gemini', size: 'medium', x: 0, y: 0.5, z: -0.4, phase: 4 },
 
     // Small balloons - background accents
-    { texture: '/textures/about/htmlmalybalon.webp', paintedTexture: '/textures/about/htmlmalybalon_painted.webp', label: '内搭', size: 'small', x: -5.5, y: 2.5, z: -0.8, phase: 1.2 },
-    { texture: '/textures/about/gitmalybalon.webp', paintedTexture: '/textures/about/gitmalybalon_painted.webp', label: '配饰', size: 'small', x: 5.5, y: 3, z: -0.7, phase: 2.8 },
-    { texture: '/textures/about/figmamalybalon.webp', paintedTexture: '/textures/about/figmamalybalon_painted.webp', label: '光影', size: 'small', x: -3, y: 4.5, z: -0.5, phase: 3.5 },
-    { texture: '/textures/about/firebasemalybalon.webp', paintedTexture: '/textures/about/firebasemalybalon_painted.webp', label: '主图', size: 'small', x: 3.5, y: 4, z: -0.6, phase: 4.5 },
+    { texture: '/textures/about/htmlmalybalon.webp', paintedTexture: '/textures/about/htmlmalybalon_painted.webp', label: '淘宝', size: 'small', x: -5.5, y: 2.5, z: -0.8, phase: 1.2 },
+    { texture: '/textures/about/gitmalybalon.webp', paintedTexture: '/textures/about/gitmalybalon_painted.webp', label: '抖音', size: 'small', x: 5.5, y: 3, z: -0.7, phase: 2.8 },
+    { texture: '/textures/about/figmamalybalon.webp', paintedTexture: '/textures/about/figmamalybalon_painted.webp', label: '小红书', size: 'small', x: -3, y: 4.5, z: -0.5, phase: 3.5 },
+    { texture: '/textures/about/firebasemalybalon.webp', paintedTexture: '/textures/about/firebasemalybalon_painted.webp', label: 'ComfyUI', size: 'small', x: 3.5, y: 4, z: -0.6, phase: 4.5 },
 ];
 
 // Size multipliers for balloon categories
@@ -1321,7 +1344,7 @@ const SkillBalloon = ({ config, revealFactorRef, spreadFactorRef, timeRef }) => 
                 {!isPopping && (
                     <Text
                         position={[0, baseHeight * 0.2, 0.02]}
-                        fontSize={baseHeight * 0.15}
+                        fontSize={baseHeight * (config.label.length > 7 ? 0.11 : 0.15)}
                         color="#1a1a1a"
                         anchorX="center"
                         anchorY="middle"
@@ -1433,7 +1456,7 @@ const SkillsMilestone = ({ z, scrollProgressRef }) => {
                 anchorY="middle"
                 font="/fonts/ZCOOLKuaiLe-Regular.woff"
             >
-                关键词
+                用什么做
             </Text>
 
             {/* Subtitle */}
@@ -1445,7 +1468,7 @@ const SkillsMilestone = ({ z, scrollProgressRef }) => {
                 anchorY="middle"
                 font="/fonts/ZCOOLKuaiLe-Regular.woff"
             >
-                戳破气球看看
+                常用工具 + 内容平台 · 戳破气球看看
             </Text>
 
             {/* === FLOATING BALLOONS === */}

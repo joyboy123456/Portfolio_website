@@ -299,12 +299,13 @@ async function renderWorkCard(work, painted, thumbOf) {
     if (work.kind === 'case') {
         lines.push([76, INK, `案例 ${work.number}`, 100]);
         const meta = [work.client, work.period].filter(Boolean).join(' · ');
+        if (work.evidence?.image) lines.push([54, INK, '真实上架证据', 78]);
         if (meta) lines.push([50, SOFT_INK, meta, 74]);
         ctx.font = font(52);
         wrapText(ctx, work.direction || work.focus, w - pad * 3).slice(0, 3).forEach((ln) => lines.push([52, INK, ln, 70]));
     } else {
         lines.push([96, INK, work.group, 122]);
-        const meta = [work.groupEn, work.year, work.pageTotal ? `${work.pageNo} / ${work.pageTotal}` : work.pageNo].filter(Boolean).join(' · ');
+        const meta = ['往期作品集', work.year, work.pageTotal ? `${work.pageNo} / ${work.pageTotal}` : work.pageNo].filter(Boolean).join(' · ');
         if (meta) lines.push([48, SOFT_INK, meta, 72]);
         ctx.font = font(54);
         wrapText(ctx, work.alt, w - pad * 3).slice(0, 3).forEach((ln) => lines.push([54, INK, ln, 72]));

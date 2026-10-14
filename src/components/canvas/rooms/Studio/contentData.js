@@ -2,10 +2,10 @@
  * Studio（创作）房间内容
  *
  * 旋转塔上的每块屏幕都来自 public/portfolio.json：
- * - 电视（tv）：experience.heroVideo 影像作品
- * - 显示器（monitor）：创作过程四个环节（与作品 roles 对应）
- * - 显示器（monitor）：experience.collage 中的 7 张创作过程拼贴图（外套、裤装……）
- * - 手机（phone）：按季节分组的造型系列
+ * - 电视（tv）：experience.heroVideo（AI 影像）
+ * - 显示器（monitor）：素材生产线六个环节（输入 → 搭配 → AI 模特 → 上身还原 → 精修 → 交付）
+ * - 显示器（monitor）：experience.collage 中的 7 张输入素材（外套、裤装……）
+ * - 手机（phone）：四季上新企划（12 组造型，纯文字）
  */
 import { PROCESS_STEPS } from '../../../../content/copy';
 import { groupBySeason, COLLAGE_LABELS, thumbOf } from '../../../../content/portfolio';
@@ -15,21 +15,21 @@ export const PLATFORM_CONFIG = {
         color: '#e9a23b',
         accentColor: '#c9821b',
         icon: '▶',
-        label: '影像作品',
+        label: 'AI 影像',
         shape: 'tv',
     },
     process: {
         color: '#6d9bc3',
         accentColor: '#4f7da5',
         icon: '✎',
-        label: '创作过程',
+        label: '素材生产线',
         shape: 'monitor',
     },
     season: {
         color: '#8fbf7a',
         accentColor: '#6f9f5a',
         icon: '✿',
-        label: '季节系列',
+        label: '四季上新企划',
         shape: 'phone',
     },
 };
@@ -50,7 +50,7 @@ export function buildStudioContent(portfolio) {
             id: 'video-hero',
             platform: 'video',
             device: 'tv',
-            title: experience.heroLabel || '影像作品',
+            title: experience.heroLabel || 'AI 影像',
             description: '户外童装主题的 AI 影像生成展示。',
             poster: experience.heroPoster,
             video: experience.heroVideo,
@@ -64,7 +64,7 @@ export function buildStudioContent(portfolio) {
             platform: 'process',
             device: 'monitor',
             index: step.index,
-            title: step.role,
+            title: step.title || step.role,
             summary: step.summary,
             description: step.description,
             meta: count ? `参与 ${count} 组作品` : '',
@@ -78,12 +78,12 @@ export function buildStudioContent(portfolio) {
             id: `collage-${key}`,
             platform: 'process',
             device: 'monitor',
-            title: name,
-            summary: '创作过程拼贴',
+            title: `输入素材 · ${name}`,
+            summary: '输入素材',
             image: src,
             thumb: thumbOf(src),
             description: '',
-            meta: '创作过程拼贴',
+            meta: '生产线输入素材',
         });
     });
 
@@ -93,9 +93,9 @@ export function buildStudioContent(portfolio) {
             platform: 'season',
             device: 'phone',
             title: season,
-            summary: `${looks.length} 组造型`,
+            summary: `${season}季上新 · ${looks.length} 组`,
             lines: looks.map((l) => l.title),
-            description: `${SEASON_NOTES[season] || ''}${SEASON_NOTES[season] ? '。' : ''}本季作品：${looks.map((l) => l.title).join('、')}。`,
+            description: `四季上新企划 · ${season}季：${SEASON_NOTES[season] || ''}${SEASON_NOTES[season] ? '。' : ''}本季造型：${looks.map((l) => l.title).join('、')}。`,
             meta: `${looks.length} 组造型`,
         });
     });

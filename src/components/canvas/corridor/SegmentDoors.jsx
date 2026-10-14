@@ -170,7 +170,7 @@ const SegmentDoors = ({
                 rotation={[0, 0, 0.05]}
             >
                 <Text font={decoFont} fontSize={0.2} color="#2a2a2a" anchorX="center" anchorY="middle" textAlign="center" lineHeight={1.35}>
-                    {'搭配构思\n·\nAI 模特\n·\n服装上身\n·\n后期精修'}
+                    {'商品图\n｜\nAI 模特\n｜\n上身还原\n｜\n上架主图'}
                 </Text>
             </group>
 
@@ -188,7 +188,7 @@ const SegmentDoors = ({
                 rotation={[0, 0, -0.05]}
             >
                 <Text font={decoFont} fontSize={0.22} color="#2a2a2a" anchorX="center" anchorY="middle" textAlign="center" lineHeight={1.4}>
-                    {'灵感来自\n每一件\n小衣服'}
+                    {'一件衣服\n一整套\n上新素材'}
                 </Text>
             </group>
 
@@ -200,7 +200,7 @@ const SegmentDoors = ({
             {/* Decoration Top (While True) */}
             <group position={[0, topWallCenterY, 0.07]}>
                 <Text font={decoFont} fontSize={0.2} color="#2a2a2a" anchorX="center" anchorY="middle">
-                    今天穿什么？
+                    今天上新什么？
                 </Text>
             </group>
 

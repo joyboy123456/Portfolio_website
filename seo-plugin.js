@@ -22,7 +22,7 @@ function readPortfolio(root) {
         return {
             brand: profile.brand || '衣着之间',
             name: profile.name || '',
-            title: profile.title || 'AI 童装电商视觉设计',
+            title: profile.title || 'AI 童装电商素材设计',
             intro: profile.intro || '',
             email: profile.email || '',
             projects: Array.isArray(raw.projects) ? raw.projects : [],
@@ -33,39 +33,54 @@ function readPortfolio(root) {
         };
     } catch (error) {
         console.warn('[seo-plugin] 无法读取 public/portfolio.json：', error.message);
-        return { brand: '衣着之间', name: '', title: 'AI 童装电商视觉设计', intro: '', email: '', projects: [], headline: '', positioning: '', cases: [], pages: [] };
+        return { brand: '衣着之间', name: '', title: 'AI 童装电商素材设计', intro: '', email: '', projects: [], headline: '', positioning: '', cases: [], pages: [] };
     }
 }
 
+// 对外展示名：优先用真实姓名（史雪），品牌名只作兜底
+const displayName = (data) => data.name || data.brand;
+const siteTitleOf = (data) => `${displayName(data)} · ${data.title}作品集`;
+const TAGLINE = '一件衣服进来，一整套可上架的主图、模特图、系列图出去。';
+const DELIVERABLES = ['电商主图', 'AI 模特上身图', '系列造型图'];
+const TOOLS = ['Photoshop', '即梦', 'Lovart', 'ComfyUI', 'OpenAI', 'Gemini', 'Vibe Coding'];
+const PLATFORMS = ['淘宝', '小红书', '抖音'];
+const PROCESS = ['输入平铺/白底商品图', '搭配构思', 'AI 模特生成', '服装上身还原', '后期精修', '交付主图 / 模特上身图 / 系列图'];
+
 function buildSeoHtml(data) {
-    const siteTitle = `${data.brand} · ${data.title}作品集`;
+    const siteTitle = siteTitleOf(data);
     let html = `\n<div id="seo-content" class="sr-only-seo">\n`;
     html += `  <header>\n    <h1>${escapeHtml(siteTitle)}</h1>\n`;
-    if (data.name) html += `    <p>${escapeHtml(data.name)}</p>\n`;
+    html += `    <p>${escapeHtml(TAGLINE)}</p>\n`;
     if (data.headline) html += `    <p>${escapeHtml(data.headline)}</p>\n`;
     if (data.positioning) html += `    <p>${escapeHtml(data.positioning)}</p>\n`;
     if (data.intro) html += `    <p>${escapeHtml(data.intro)}</p>\n`;
+    html += `    <p>交付：${escapeHtml(DELIVERABLES.join('、'))}</p>\n`;
+    html += `    <p>常用工具：${escapeHtml(TOOLS.join('、'))}</p>\n`;
+    html += `    <p>内容平台：${escapeHtml(PLATFORMS.join('、'))}</p>\n`;
     html += `  </header>\n`;
     if (data.cases.length > 0) {
         html += `  <section id="cases">\n    <h2>案例</h2>\n    <ul>\n`;
         data.cases.forEach((c) => {
             const meta = [c.client, c.period].filter(Boolean).join(' · ');
-            html += `      <li>\n        <h3>${escapeHtml(c.projectName || '')}${meta ? `（${escapeHtml(meta)}）` : ''}</h3>\n`;
+            const proof = c.evidence?.image ? ' · 真实上架证据' : '';
+            html += `      <li>\n        <h3>${escapeHtml(c.projectName || '')}${meta ? `（${escapeHtml(meta)}）` : ''}${proof}</h3>\n`;
             if (c.focus) html += `        <p>${escapeHtml(c.focus)}</p>\n`;
+            if (c.deliverables) html += `        <p>交付：${escapeHtml(c.deliverables)}</p>\n`;
+            if (c.evidence?.caption) html += `        <p>${escapeHtml(c.evidence.caption)}</p>\n`;
             html += `      </li>\n`;
         });
         html += `    </ul>\n  </section>\n`;
     }
     if (data.pages.length > 0) {
-        html += `  <section id="archive">\n    <h2>作品集页面</h2>\n    <ul>\n`;
+        html += `  <section id="archive">\n    <h2>往期作品集</h2>\n    <ul>\n`;
         data.pages.forEach((a) => { html += `      <li>${escapeHtml(a.alt || a.label || '')}</li>\n`; });
         html += `    </ul>\n  </section>\n`;
     }
     html += `  <nav aria-label="主导航">\n    <ul>\n`;
-    html += `      <li><a href="/">首页（走廊）</a></li>\n      <li><a href="/gallery">作品</a></li>\n      <li><a href="/studio">创作</a></li>\n      <li><a href="/about">关于</a></li>\n      <li><a href="/contact">联系</a></li>\n`;
+    html += `      <li><a href="/">首页（走廊）</a></li>\n      <li><a href="/gallery">案例</a></li>\n      <li><a href="/studio">流程</a></li>\n      <li><a href="/about">关于</a></li>\n      <li><a href="/contact">合作</a></li>\n`;
     html += `    </ul>\n  </nav>\n`;
     if (data.projects.length > 0) {
-        html += `  <section id="projects">\n    <h2>作品</h2>\n    <ul>\n`;
+        html += `  <section id="projects">\n    <h2>四季上新企划</h2>\n    <ul>\n`;
         data.projects.forEach((p) => {
             const meta = [p.category, Array.isArray(p.seasons) ? p.seasons.join('、') : ''].filter(Boolean).join(' · ');
             html += `      <li>\n        <h3>${escapeHtml(p.title || '')}${meta ? `（${escapeHtml(meta)}）` : ''}</h3>\n`;
@@ -74,7 +89,7 @@ function buildSeoHtml(data) {
         });
         html += `    </ul>\n  </section>\n`;
     }
-    html += `  <section id="process">\n    <h2>创作过程</h2>\n    <p>搭配构思 · AI 模特生成 · 服装上身 · 后期精修</p>\n  </section>\n`;
+    html += `  <section id="process">\n    <h2>素材生产线</h2>\n    <p>${escapeHtml(PROCESS.join(' → '))}</p>\n  </section>\n`;
     html += `</div>\n`;
     return html;
 }
@@ -86,7 +101,7 @@ function buildJsonLd(data) {
         name: data.name || data.brand,
         url: SITE_URL,
         description: data.intro || undefined,
-        knowsAbout: ['童装搭配', 'AI 电商视觉', 'AI 模特生成', '电商主图后期'],
+        knowsAbout: ['AI 童装电商素材', '电商主图', 'AI 模特上身图', '系列造型图', '童装搭配', ...TOOLS],
     };
     if (data.name) person.jobTitle = data.title;
     return {
@@ -97,7 +112,7 @@ function buildJsonLd(data) {
                 '@type': 'WebSite',
                 '@id': `${SITE_URL}/#website`,
                 url: SITE_URL,
-                name: `${data.brand} · ${data.title}作品集`,
+                name: siteTitleOf(data),
                 inLanguage: 'zh-CN',
                 publisher: { '@id': `${SITE_URL}/#creator` },
             },
@@ -122,18 +137,19 @@ function buildJsonLd(data) {
 }
 
 function buildLlmsTxt(data) {
-    let text = `# ${data.brand}\n> ${data.title}作品集 · ${SITE_URL}\n\n`;
-    if (data.name) text += `作者：${data.name}\n\n`;
+    let text = `# ${displayName(data)} · ${data.title}\n> ${TAGLINE} · ${SITE_URL}\n\n`;
     if (data.positioning) text += `${data.positioning}\n\n`;
     if (data.intro) text += `${data.intro}\n\n`;
     if (data.cases.length > 0) {
         text += `## 案例\n`;
-        data.cases.forEach((c) => { text += `- **${c.projectName || ''}**${c.client ? `（${c.client}）` : ''}：${c.focus || ''}\n`; });
+        data.cases.forEach((c) => { text += `- **${c.projectName || ''}**${c.client ? `（${c.client}）` : ''}${c.evidence?.image ? '（真实上架证据）' : ''}：${c.focus || ''}${c.deliverables ? ` 交付：${c.deliverables}。` : ''}\n`; });
         text += `\n`;
     }
-    text += `## 创作过程\n- 搭配构思\n- AI 模特生成\n- 服装上身\n- 后期精修\n\n`;
+    text += `## 交付\n${DELIVERABLES.map((d) => `- ${d}`).join('\n')}\n\n`;
+    text += `## 素材生产线\n${PROCESS.map((d) => `- ${d}`).join('\n')}\n\n`;
+    text += `## 工具与平台\n- 工具：${TOOLS.join('、')}\n- 内容平台：${PLATFORMS.join('、')}\n\n`;
     if (data.projects.length > 0) {
-        text += `## 作品\n`;
+        text += `## 四季上新企划（造型构思）\n`;
         data.projects.forEach((p) => {
             const meta = [p.category, Array.isArray(p.seasons) ? p.seasons.join('、') : ''].filter(Boolean).join(' · ');
             text += `- **${p.title}**${meta ? `（${meta}）` : ''}：${p.direction || ''}\n`;
@@ -163,8 +179,8 @@ export function generateSeoHtml() {
         },
         transformIndexHtml(html) {
             const data = readPortfolio(root);
-            const siteTitle = `${data.brand} · ${data.title}作品集`;
-            const description = data.positioning || data.intro || `${data.brand}：${data.title}作品集。`;
+            const siteTitle = siteTitleOf(data);
+            const description = `${displayName(data)}：用 AI 生成童装电商素材。一件衣服进来，一整套可上架的${DELIVERABLES.join('、')}出去。`;
             const jsonLd = `\n  <script type="application/ld+json">\n${JSON.stringify(buildJsonLd(data), null, 2)}\n  </script>\n`;
             let out = html
                 .replace(/<title>(.*?)<\/title>/, `<title>${escapeHtml(siteTitle)}</title>`)

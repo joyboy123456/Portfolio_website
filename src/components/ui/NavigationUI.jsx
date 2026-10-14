@@ -12,9 +12,9 @@ import '../../styles/NavigationUI.scss';
 // These positions correspond to the visual elements on the map
 const ROOMS = [
     { id: 'about', label: '关于', x: 43, y: 38 },      // Paper airplane (left side)
-    { id: 'gallery', label: '作品', x: 43, y: 72 },  // City buildings (bottom left)
-    { id: 'contact', label: '联系', x: 57, y: 25 },  // Pier/dock (top right)
-    { id: 'studio', label: '创作', x: 57, y: 55 },    // Monitors stack (right side)
+    { id: 'gallery', label: '案例', x: 43, y: 72 },  // City buildings (bottom left)
+    { id: 'contact', label: '合作', x: 57, y: 25 },  // Pier/dock (top right)
+    { id: 'studio', label: '流程', x: 57, y: 55 },    // Monitors stack (right side)
 ];
 
 // Pin starting position - the dashed circle at the bottom of the tower
@@ -358,7 +358,7 @@ const NavigationUI = () => {
                                 onFocus={() => setHoveredRoom('gallery')}
                                 onBlur={() => setHoveredRoom(null)}
                                 onClick={() => handleRoomClick('gallery')}
-                                aria-label="前往作品"
+                                aria-label="前往案例"
                             />
                             <button
                                 type="button"
@@ -368,7 +368,7 @@ const NavigationUI = () => {
                                 onFocus={() => setHoveredRoom('contact')}
                                 onBlur={() => setHoveredRoom(null)}
                                 onClick={() => handleRoomClick('contact')}
-                                aria-label="前往联系"
+                                aria-label="前往合作"
                             />
                             <button
                                 type="button"
@@ -378,14 +378,14 @@ const NavigationUI = () => {
                                 onFocus={() => setHoveredRoom('studio')}
                                 onBlur={() => setHoveredRoom(null)}
                                 onClick={() => handleRoomClick('studio')}
-                                aria-label="前往创作"
+                                aria-label="前往流程"
                             />
 
                             {/* Permanent Map Text Labels */}
                             <div className="map-room-label about">关于</div>
-                            <div className="map-room-label gallery">作品</div>
-                            <div className="map-room-label contact">联系</div>
-                            <div className="map-room-label studio">创作</div>
+                            <div className="map-room-label gallery">案例</div>
+                            <div className="map-room-label contact">合作</div>
+                            <div className="map-room-label studio">流程</div>
 
                             {/* Pin slot markers - 4 locations */}
                             {ROOMS.map((room) => (

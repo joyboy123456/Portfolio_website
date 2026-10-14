@@ -10,6 +10,7 @@ import { useAchievements } from '../../../../context/AchievementsContext';
 import { useAudio } from '../../../../context/AudioManager';
 import { usePortfolioSuspense } from '../../../../hooks/usePortfolioData';
 import { getContactChannels } from '../../../../content/portfolio';
+import { ROOM_SUBTITLES } from '../../../../content/copy';
 
 // ============================================
 // ============================================
@@ -413,7 +414,7 @@ const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                             title: channel.label,
                             description: channel.id === 'phone' ? `电话：${channel.value}` : `邮箱：${channel.value}`,
                             url: channel.url,
-                            platformConfig: { label: '联系' },
+                            platformConfig: { label: '合作' },
                         });
                         window.location.href = channel.url;
                     } else if (channel.id === 'wechat') {
@@ -421,7 +422,7 @@ const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                         openOverlay({
                             title: '微信',
                             description: `微信号：${channel.value}（已尝试复制到剪贴板）`,
-                            platformConfig: { label: '联系' },
+                            platformConfig: { label: '合作' },
                         });
                     } else if (channel.url) {
                         window.open(channel.url, '_blank', 'noopener');
@@ -440,6 +441,35 @@ const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                     />
                 );
             })}
+
+            {/* 合作标题：只在有真实联系方式时显示 */}
+            {channels.length > 0 && (
+                <group position={[0, isMobile ? 2.3 : 2.5, -9]}>
+                    <Text
+                        fontSize={isMobile ? 0.42 : 0.7}
+                        color="#1a1a1a"
+                        anchorX="center"
+                        anchorY="middle"
+                        font="/fonts/ZCOOLKuaiLe-Regular.woff"
+                        outlineWidth={0.02}
+                        outlineColor="#ffffff"
+                    >
+                        {ROOM_SUBTITLES.contact}
+                    </Text>
+                    <Text
+                        position={[0, isMobile ? -0.45 : -0.65, 0]}
+                        fontSize={isMobile ? 0.18 : 0.26}
+                        color="#444444"
+                        anchorX="center"
+                        anchorY="middle"
+                        font="/fonts/ZCOOLKuaiLe-Regular.woff"
+                        outlineWidth={0.01}
+                        outlineColor="#ffffff"
+                    >
+                        点木桶，打电话或发邮件
+                    </Text>
+                </group>
+            )}
 
             {/* 尚未填写联系方式时的提示 */}
             {channels.length === 0 && (

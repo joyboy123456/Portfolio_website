@@ -2,8 +2,8 @@
     "profile": {
         "name": "史雪",
         "brand": "衣着之间",
-        "title": "AI 童装电商视觉设计",
-        "intro": "专注童装搭配与 AI 电商视觉。从一件服装出发，选择内搭、下装、配饰与模特风格，在自然的童趣和清晰的商品表达之间找到平衡。关注版型、颜色与细节还原，也关注每一张主图的完整度。",
+        "title": "AI 童装电商素材设计",
+        "intro": "史雪，专注用 AI 生成童装电商素材。从一件服装的平铺图或白底图出发，完成搭配构思、AI 模特生成、服装上身还原与后期精修，交付电商主图、AI 模特上身图和系列造型图。关注版型、颜色与细节还原，让商品的特点在每一张图里被清楚看见。",
         "phone": "192 6927 7230",
         "email": "17shixue@gmail.com",
         "wechat": "",
@@ -255,7 +255,7 @@
     "experience": {
         "heroVideo": "https://heinimumu.oss-cn-hangzhou.aliyuncs.com/portfolio/site-media/works/hero-adventure-scroll-9657b4884ed4.mp4",
         "heroPoster": "/works/oss/hero-adventure-scroll-poster.webp",
-        "heroLabel": "AI 影像生成展示",
+        "heroLabel": "AI 影像",
         "collage": {
             "jacket": "/works/oss/jacket.webp",
             "trousers": "/works/oss/trousers.webp",
@@ -278,7 +278,7 @@
             "变成看得见的",
             "吸引力。"
         ],
-        "positioning": "从服装搭配、AI 影像到电商画面，让商品的特点被清楚看见。",
+        "positioning": "用 AI 把一件童装变成一整套可上架的电商素材：主图、AI 模特上身图、系列造型图。",
         "cases": [
             {
                 "projectName": "上线页面与销售反馈",
@@ -372,7 +372,7 @@
                 "src": "/works/oss/womens-01.webp",
                 "width": "800",
                 "height": "566",
-                "alt": "施雪个人视觉作品集封面",
+                "alt": "史雪个人视觉作品集封面",
                 "label": "Womenswear / 2026 / 01 / 23",
                 "srcset": "/works/oss/thumb/womens-01.webp 768w, /works/oss/womens-01.webp 800w"
             },

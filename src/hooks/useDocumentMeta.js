@@ -10,32 +10,32 @@ import { SITE_URL } from '../content/copy';
  * browser back/forward buttons for seamless navigation.
  */
 
-const BRAND = '衣着之间';
+const BRAND = '史雪 · AI 童装电商素材设计';
 const ROOM_META = {
     null: {
         path: '/',
-        title: '衣着之间 · AI 童装电商视觉设计作品集',
-        description: '衣着之间：AI 童装电商视觉设计作品集。从一件服装出发，完成搭配构思、AI 模特生成、服装上身与后期精修，在童趣与清晰的商品表达之间找到平衡。',
+        title: '史雪 · AI 童装电商素材设计作品集',
+        description: '史雪：用 AI 生成童装电商素材。一件衣服进来，一整套可上架的电商主图、AI 模特上身图、系列造型图出去。',
     },
     about: {
         path: '/about',
         title: `关于 — ${BRAND}`,
-        description: '关于衣着之间：专注童装搭配与 AI 电商视觉，关注版型、颜色与细节还原，也关注每一张主图的完整度。',
+        description: '关于史雪：专注用 AI 生成童装电商素材，常用 Photoshop、即梦、Lovart、ComfyUI、OpenAI、Gemini，为淘宝、小红书、抖音制作主图、AI 模特上身图与系列造型图。',
     },
     gallery: {
         path: '/gallery',
-        title: `作品 — ${BRAND}`,
-        description: '电商视觉案例，以及女装、童装与往期作品集页面。',
+        title: `案例 — ${BRAND}`,
+        description: '真实上架的童装电商素材案例（含淘宝商品页面与已售记录），以及女装、童装与往期作品集页面。',
     },
     studio: {
         path: '/studio',
-        title: `创作 — ${BRAND}`,
-        description: '从一件衣服到一张主图：搭配构思、AI 模特生成、服装上身、后期精修四个环节。',
+        title: `流程 — ${BRAND}`,
+        description: '从商品图到主图的素材生产线：输入平铺/白底商品图 → 搭配构思 → AI 模特生成 → 服装上身还原 → 后期精修 → 交付主图、模特上身图、系列图。',
     },
     contact: {
         path: '/contact',
-        title: `联系 — ${BRAND}`,
-        description: '与衣着之间联系。',
+        title: `合作 — ${BRAND}`,
+        description: '需要一组上新素材？通过电话或邮件联系史雪。',
     },
 };
 
